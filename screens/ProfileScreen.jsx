@@ -6,8 +6,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useEffect, useState } from "react";
 import { COLORS, SIZES } from "../constants";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -15,10 +14,37 @@ import {
   MaterialCommunityIcons,
   SimpleLineIcons,
 } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function ProfileScreen({ navigation }) {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
-
+  useEffect(() => {
+    checkExistingUser();
+  }, []);
+  const checkExistingUser = async () => {
+    const id = await AsyncStorage.getItem("id");
+    const userId = `user${JSON.parse(id)}`;
+    try {
+      const userCurrent = await AsyncStorage.getItem(userId);
+      if (userCurrent !== null) {
+        const parsedData = JSON.parse(userCurrent);
+        setUserData(parsedData);
+        setUserLogin(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const userLogout = async () => {
+    const id = await AsyncStorage.getItem("id");
+    const userId = `user${JSON.parse(id)}`;
+    try {
+      await AsyncStorage.multiRemove([userId, "id"]);
+      navigation.replace("Bottom Navigation");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const logout = () => {
     Alert.alert("Logout", "Are you sure you want to log out", [
       {
@@ -26,10 +52,11 @@ export default function ProfileScreen({ navigation }) {
         onPress: () => console.log("cancel"),
       },
       {
-        text: "Continue",
-        onPress: () => console.log("logout "),
+        text: "OK",
+        onPress: () => {
+          userLogout();
+        },
       },
-      { defaultIndex: 1 },
     ]);
   };
 
@@ -98,7 +125,7 @@ export default function ProfileScreen({ navigation }) {
             >
               {userLogin === false
                 ? "Please login into your account"
-                : userData?.name}
+                : userData?.username}
             </Text>
             {userLogin === false ? (
               <TouchableOpacity onPress={() => navigation.navigate("Login")}>
@@ -114,7 +141,12 @@ export default function ProfileScreen({ navigation }) {
                 style={{ backgroundColor: COLORS.secondary }}
                 className="px-4 py-2 rounded-full"
               >
-                <Text className="font-bold">danghanam@gmail.com</Text>
+                <Text className="font-bold">
+                  {" "}
+                  {userLogin === false
+                    ? "Please login into your account"
+                    : userData?.email}
+                </Text>
               </View>
             )}
 
