@@ -43,7 +43,7 @@ export default function ProductDetailScreen() {
           <Ionicons name="chevron-back-circle" size={30} />
         </TouchableOpacity>
         <TouchableOpacity className="p-2 rounded-full mr-4 bg-white">
-          <Ionicons name="heart" size={30} color={COLORS.red} />
+          <Ionicons name="heart" size={30} color={COLORS.primary} />
         </TouchableOpacity>
       </View>
 
