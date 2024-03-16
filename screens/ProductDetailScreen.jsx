@@ -12,7 +12,6 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 export default function ProductDetailScreen() {
   const route = useRoute();
   const { item } = route.params;
-  console.log(item);
 
   const navigation = useNavigation();
   const [count, setCount] = useState(1);
