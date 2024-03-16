@@ -4,7 +4,15 @@ import React, { useCallback } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
-import { CartScreen, NewRivalsScreen, ProductDetailScreen } from "./screens";
+import {
+  CartScreen,
+  FavourtiesScreen,
+  LoginScreen,
+  NewRivalsScreen,
+  OrderScreen,
+  ProductDetailScreen,
+  SignUpScreen,
+} from "./screens";
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -53,6 +61,34 @@ export default function App() {
         <Stack.Screen
           name="ProductList"
           component={NewRivalsScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="SignUp"
+          component={SignUpScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Orders"
+          component={OrderScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Favourties"
+          component={FavourtiesScreen}
           options={{
             headerShown: false,
           }}
