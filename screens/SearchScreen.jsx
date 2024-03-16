@@ -13,6 +13,7 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
 import axios from "axios";
 import { API_URL } from "../config";
+import { SearchTile } from "../components";
 
 export default function SearchScreen() {
   const [searchKey, setSearchKey] = useState("");
@@ -77,19 +78,24 @@ export default function SearchScreen() {
           <ActivityIndicator size="large" color={COLORS.primary} />
         </View>
       ) : isSearched && searchResults.length === 0 ? (
-        <View style={{ marginTop: 24, alignItems: "center" }}>
-          <Text>No results found</Text>
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            marginTop: 40,
+            marginRight: 20,
+          }}
+        >
+          <Image
+            source={require("../assets/images/Pose23.png")}
+            style={{ width: 300, height: 300, objectFit: "contain" }}
+          />
         </View>
       ) : (
         <FlatList
           data={searchResults}
           keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <View>
-              <Text>{item.title}</Text>
-              {/* Bổ sung các thông tin khác cần hiển thị */}
-            </View>
-          )}
+          renderItem={({ item }) => <SearchTile item={item} />}
         />
       )}
     </SafeAreaView>
