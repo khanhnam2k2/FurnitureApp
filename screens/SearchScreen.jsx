@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
 import axios from "axios";
+import { API_URL } from "../config";
 
 export default function SearchScreen() {
   const [searchKey, setSearchKey] = useState("");
@@ -28,7 +29,7 @@ export default function SearchScreen() {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `http://192.168.1.123:3000/api/products/search/${searchKey}`
+          `${API_URL}/api/products/search/${searchKey}`
         );
         if (response && response.data) {
           setSearchResults(response.data);

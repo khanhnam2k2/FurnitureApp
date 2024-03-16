@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
-
+import { API_URL } from "../config";
 export default function useFetch() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -10,7 +10,7 @@ export default function useFetch() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const url = "http://192.168.1.123:3000/api/products/";
+      const url = `${API_URL}/api/products/`;
       const response = await axios.get(url);
       setData(response.data);
     } catch (error) {
