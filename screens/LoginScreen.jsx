@@ -39,10 +39,7 @@ export default function LoginScreen({ navigation }) {
       { defaultIndex: 1 },
     ]);
   };
-  const handleLogin = (values) => {
-    setResponseData(null);
-    login(values);
-  };
+
   const login = async (values) => {
     setLoader(true);
     try {
@@ -53,10 +50,10 @@ export default function LoginScreen({ navigation }) {
         setLoader(false);
         setResponseData(response.data);
         await AsyncStorage.setItem(
-          `user${responseData._id}`,
-          JSON.stringify(responseData)
+          `user${response.data._id}`,
+          JSON.stringify(response.data)
         );
-        await AsyncStorage.setItem("id", JSON.stringify(responseData._id));
+        await AsyncStorage.setItem("id", JSON.stringify(response.data?._id));
         navigation.replace("Bottom Navigation");
       } else {
         Alert.alert("Error Logging in", "Please provide valid credentials", [
@@ -73,7 +70,6 @@ export default function LoginScreen({ navigation }) {
           text: "Cancel",
           onPress: () => {},
         },
-        { defaultIndex: 1 },
       ]);
     } finally {
       setLoader(false);
@@ -111,7 +107,7 @@ export default function LoginScreen({ navigation }) {
           <Formik
             initialValues={{ email: "", password: "" }}
             validationSchema={validationSchema}
-            onSubmit={(values) => handleLogin(values)}
+            onSubmit={(values) => login(values)}
           >
             {({
               handleChange,
