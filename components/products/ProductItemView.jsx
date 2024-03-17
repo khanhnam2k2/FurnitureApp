@@ -1,9 +1,9 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import React from "react";
-import { COLORS } from "../../constants";
+import { COLORS, SIZES } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
-
-export default function SearchTile({ item }) {
+import { MaterialIcons } from "@expo/vector-icons";
+export default function ProductItemView({ item, onPressDelete }) {
   const navigation = useNavigation();
   return (
     <View>
@@ -30,6 +30,15 @@ export default function SearchTile({ item }) {
             $ {item?.price}
           </Text>
         </View>
+        {onPressDelete && (
+          <TouchableOpacity className="p-2" onPress={() => onPressDelete()}>
+            <MaterialIcons
+              name="delete-outline"
+              size={30}
+              color={COLORS.white}
+            />
+          </TouchableOpacity>
+        )}
       </TouchableOpacity>
     </View>
   );

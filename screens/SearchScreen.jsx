@@ -13,7 +13,7 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
 import axios from "axios";
 import { API_URL } from "../config";
-import { SearchTile } from "../components";
+import { ProductItemView } from "../components";
 
 export default function SearchScreen() {
   const [searchKey, setSearchKey] = useState("");
@@ -95,7 +95,7 @@ export default function SearchScreen() {
         <FlatList
           data={searchResults}
           keyExtractor={(item) => item._id}
-          renderItem={({ item }) => <SearchTile item={item} />}
+          renderItem={({ item }) => <ProductItemView item={item} />}
         />
       )}
     </SafeAreaView>
