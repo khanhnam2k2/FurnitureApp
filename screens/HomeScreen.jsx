@@ -14,27 +14,15 @@ import Headings from "../components/home/Headings";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { checkUserLogin } from "../utils";
 export default function HomeScreen() {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
 
   useEffect(() => {
-    checkExistingUser();
+    checkUserLogin(setUserData, setUserLogin);
   }, []);
-  const checkExistingUser = async () => {
-    const id = await AsyncStorage.getItem("id");
-    const userId = `user${JSON.parse(id)}`;
-    try {
-      const userCurrent = await AsyncStorage.getItem(userId);
-      if (userCurrent !== null) {
-        const parsedData = JSON.parse(userCurrent);
-        setUserData(parsedData);
-        setUserLogin(true);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   return (
     <SafeAreaView className="flex-1 mx-4">
       <StatusBar style="auto" />

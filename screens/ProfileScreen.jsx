@@ -15,26 +15,13 @@ import {
   SimpleLineIcons,
 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { checkUserLogin } from "../utils";
 export default function ProfileScreen({ navigation }) {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
   useEffect(() => {
-    checkExistingUser();
+    checkUserLogin(setUserData, setUserLogin);
   }, []);
-  const checkExistingUser = async () => {
-    const id = await AsyncStorage.getItem("id");
-    const userId = `user${JSON.parse(id)}`;
-    try {
-      const userCurrent = await AsyncStorage.getItem(userId);
-      if (userCurrent !== null) {
-        const parsedData = JSON.parse(userCurrent);
-        setUserData(parsedData);
-        setUserLogin(true);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const userLogout = async () => {
     const id = await AsyncStorage.getItem("id");
     const userId = `user${JSON.parse(id)}`;
@@ -102,8 +89,6 @@ export default function ProfileScreen({ navigation }) {
       }}
     >
       <View>
-        <StatusBar backgroundColor={COLORS.gray} />
-
         {/* Background profile */}
         <View className="w-full">
           <Image

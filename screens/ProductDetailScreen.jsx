@@ -12,6 +12,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "../config";
 import axios from "axios";
+import { checkUserLogin } from "../utils";
 export default function ProductDetailScreen() {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
@@ -22,7 +23,7 @@ export default function ProductDetailScreen() {
   const [count, setCount] = useState(1);
 
   useEffect(() => {
-    checkExistingUser();
+    checkUserLogin(setUserData, setUserLogin);
   }, []);
 
   useEffect(() => {
