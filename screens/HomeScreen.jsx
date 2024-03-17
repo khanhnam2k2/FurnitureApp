@@ -44,7 +44,7 @@ export default function HomeScreen() {
       </View>
       <ScrollView
         contentContainerStyle={{
-          paddingBottom: 50,
+          paddingBottom: 80,
         }}
       >
         <Welcome />
