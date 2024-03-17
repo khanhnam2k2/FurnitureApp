@@ -14,6 +14,8 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Button } from "../components";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
+import { API_URL } from "../config";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
@@ -28,19 +30,35 @@ const validationSchema = Yup.object().shape({
     .required("Required"),
 });
 
-const inValidForm = () => {
-  Alert.alert("Invalid Form", "Please provide all required fields", [
-    {
-      text: "Cancel",
-      onPress: () => {},
-    },
-    { defaultIndex: 1 },
-  ]);
-};
-
 export default function SignUpScreen({ navigation }) {
   const [loader, setLoader] = useState(false);
-  const [obsecureText, setObsecureText] = useState(false);
+  const [obsecureText, setObsecureText] = useState(true);
+  const inValidForm = () => {
+    Alert.alert("Invalid Form", "Please provide all required fields", [
+      {
+        text: "Cancel",
+        onPress: () => {},
+      },
+      { defaultIndex: 1 },
+    ]);
+  };
+  const registerUser = async (values) => {
+    setLoader(true);
+    try {
+      const endpoint = `${API_URL}/api/register`;
+      const data = values;
+      console.log(values);
+
+      const response = await axios.post(endpoint, data);
+      if (response.status === 201) {
+        navigation.replace("Login");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoader(false);
+    }
+  };
   return (
     <ScrollView>
       <SafeAreaView className="mx-5">
@@ -78,7 +96,7 @@ export default function SignUpScreen({ navigation }) {
               location: "",
             }}
             validationSchema={validationSchema}
-            onSubmit={(values) => console.log(values)}
+            onSubmit={(values) => registerUser(values)}
           >
             {({
               handleChange,
@@ -201,7 +219,7 @@ export default function SignUpScreen({ navigation }) {
                       onPress={() => setObsecureText(!obsecureText)}
                     >
                       <MaterialCommunityIcons
-                        name={obsecureText ? "eye-outline" : "eye-off-outline"}
+                        name={!obsecureText ? "eye-outline" : "eye-off-outline"}
                         size={18}
                       />
                     </TouchableOpacity>
@@ -252,14 +270,18 @@ export default function SignUpScreen({ navigation }) {
                   onPress={isValid ? handleSubmit : () => inValidForm()}
                   title={"S I G N U P"}
                   isValid={isValid}
+                  loader={loader}
                 />
-
-                <Text
-                  className="mt-4 text-center"
-                  onPress={() => navigation.navigate("Login")}
-                >
-                  Login{" "}
-                </Text>
+                <View className="flex-row mt-2 items-center justify-center">
+                  <Text>Have a account?</Text>
+                  <Text
+                    className="text-center ml-1 font-bold"
+                    style={{ color: COLORS.primary }}
+                    onPress={() => navigation.navigate("Login")}
+                  >
+                    Login{" "}
+                  </Text>
+                </View>
               </View>
             )}
           </Formik>

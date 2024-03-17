@@ -8,10 +8,10 @@ export default function Button({ title, onPress, isValid, loader }) {
       onPress={onPress}
       className="h-12 my-5 w-full justify-center items-center rounded-full "
       style={{
-        backgroundColor: isValid === false ? COLORS.gray : COLORS.primary,
+        backgroundColor: !isValid ? COLORS.gray : COLORS.primary,
       }}
     >
-      {loader === false ? (
+      {!loader ? (
         <Text className="font-bold text-base text-white">{title}</Text>
       ) : (
         <ActivityIndicator size={SIZES.large} color={COLORS.primary} />

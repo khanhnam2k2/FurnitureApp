@@ -192,7 +192,7 @@ export default function LoginScreen({ navigation }) {
                       onPress={() => setObsecureText(!obsecureText)}
                     >
                       <MaterialCommunityIcons
-                        name={obsecureText ? "eye-outline" : "eye-off-outline"}
+                        name={!obsecureText ? "eye-outline" : "eye-off-outline"}
                         size={18}
                       />
                     </TouchableOpacity>
@@ -210,12 +210,16 @@ export default function LoginScreen({ navigation }) {
                   isValid={isValid}
                 />
 
-                <Text
-                  className="mt-4 text-center"
-                  onPress={() => navigation.navigate("SignUp")}
-                >
-                  Register
-                </Text>
+                <View className="flex-row mt-4 items-center justify-center">
+                  <Text>Don't have account?</Text>
+                  <Text
+                    className="text-center ml-1 font-bold"
+                    style={{ color: COLORS.primary }}
+                    onPress={() => navigation.navigate("SignUp")}
+                  >
+                    Register
+                  </Text>
+                </View>
               </View>
             )}
           </Formik>
