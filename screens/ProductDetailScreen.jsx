@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Ionicons,
@@ -9,12 +9,70 @@ import {
 } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from "../config";
+import axios from "axios";
 export default function ProductDetailScreen() {
+  const [userData, setUserData] = useState(null);
+  const [userLogin, setUserLogin] = useState(false);
+  const [isFavourite, setIsFavourite] = useState(false);
   const route = useRoute();
   const { item } = route.params;
-
   const navigation = useNavigation();
   const [count, setCount] = useState(1);
+
+  useEffect(() => {
+    checkExistingUser();
+  }, []);
+
+  useEffect(() => {
+    if (userData) {
+      checkUserFavourite();
+    }
+  }, [userData]);
+  const checkUserFavourite = async () => {
+    try {
+      const response = await axios.get(
+        `${API_URL}/api/user/${userData._id}/favorites`
+      );
+      if (response.status === 200) {
+        const favoriteProducts = response.data;
+        const foundProduct = favoriteProducts.find(
+          (product) => product._id === item._id
+        );
+        setIsFavourite(!!foundProduct);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const checkExistingUser = async () => {
+    const id = await AsyncStorage.getItem("id");
+    const userId = `user${JSON.parse(id)}`;
+    try {
+      const userCurrent = await AsyncStorage.getItem(userId);
+      if (userCurrent !== null) {
+        const parsedData = JSON.parse(userCurrent);
+        setUserData(parsedData);
+        setUserLogin(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleFavorite = async () => {
+    try {
+      const endpoint = `${API_URL}/api/products/${item._id}/favorites`;
+      const data = { userId: userData._id };
+      const response = await axios.post(endpoint, data);
+      if (response.status === 200) {
+        // Cập nhật trạng thái yêu thích dựa trên phản hồi từ máy chủ
+        setIsFavourite(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const increment = () => {
     setCount(count + 1);
@@ -41,8 +99,17 @@ export default function ProductDetailScreen() {
         >
           <Ionicons name="chevron-back-circle" size={30} />
         </TouchableOpacity>
-        <TouchableOpacity className="p-2 rounded-full mr-4 bg-white">
-          <Ionicons name="heart" size={30} color={COLORS.primary} />
+        <TouchableOpacity
+          onPress={() =>
+            userLogin ? handleFavorite() : navigation.navigate("Login")
+          }
+          className="p-2 rounded-full mr-4 bg-white"
+        >
+          <Ionicons
+            name="heart"
+            size={30}
+            color={isFavourite ? COLORS.red : COLORS.black}
+          />
         </TouchableOpacity>
       </View>
 
