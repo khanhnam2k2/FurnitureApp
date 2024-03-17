@@ -1,10 +1,22 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../constants";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { checkUserLogin, handleAddToCart } from "../../utils";
 export default function ProductCardView({ item }) {
   const navigation = useNavigation();
+  const [userData, setUserData] = useState(null);
+  const [userLogin, setUserLogin] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    checkUserLogin(setUserData, setUserLogin);
+  }, []);
+
+  const addToCart = () => {
+    handleAddToCart(setLoading, userData._id, item._id, 1);
+  };
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate("ProductDetail", { item })}
@@ -39,7 +51,7 @@ export default function ProductCardView({ item }) {
             <Text style={{ fontSize: SIZES.medium }} className="font-bold">
               ${item?.price}
             </Text>
-            <TouchableOpacity>
+            <TouchableOpacity disabled={loading} onPress={() => addToCart()}>
               <Ionicons name="add-circle" size={35} color={COLORS.primary} />
             </TouchableOpacity>
           </View>

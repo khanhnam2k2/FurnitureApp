@@ -1,6 +1,5 @@
-import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Ionicons,
   SimpleLineIcons,
@@ -9,14 +8,14 @@ import {
 } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "../config";
 import axios from "axios";
-import { checkUserLogin } from "../utils";
+import { checkUserLogin, handleAddToCart } from "../utils";
 export default function ProductDetailScreen() {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
   const [isFavourite, setIsFavourite] = useState(false);
+  const [loading, setLoading] = useState(false);
   const route = useRoute();
   const { item } = route.params;
   const navigation = useNavigation();
@@ -31,6 +30,7 @@ export default function ProductDetailScreen() {
       checkUserFavourite();
     }
   }, [userData]);
+
   const checkUserFavourite = async () => {
     try {
       const response = await axios.get(
@@ -47,20 +47,7 @@ export default function ProductDetailScreen() {
       console.error(error);
     }
   };
-  const checkExistingUser = async () => {
-    const id = await AsyncStorage.getItem("id");
-    const userId = `user${JSON.parse(id)}`;
-    try {
-      const userCurrent = await AsyncStorage.getItem(userId);
-      if (userCurrent !== null) {
-        const parsedData = JSON.parse(userCurrent);
-        setUserData(parsedData);
-        setUserLogin(true);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const handleFavorite = async () => {
     try {
       const endpoint = `${API_URL}/api/products/${item._id}/favorites`;
@@ -74,6 +61,9 @@ export default function ProductDetailScreen() {
       console.error(error);
     }
   };
+  const addToCart = () => {
+    handleAddToCart(setLoading, userData._id, item._id, count);
+  };
 
   const increment = () => {
     setCount(count + 1);
@@ -83,6 +73,7 @@ export default function ProductDetailScreen() {
       setCount(count - 1);
     }
   };
+
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
       <View className="background-img flex-row justify-center">
@@ -196,8 +187,10 @@ export default function ProductDetailScreen() {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
+            disabled={loading}
+            onPress={() => addToCart()}
             className="flex-row justify-center items-center w-20 p-2 rounded-3xl"
-            style={{ backgroundColor: COLORS.primary }}
+            style={{ backgroundColor: loading ? COLORS.gray : COLORS.primary }}
           >
             <Fontisto
               name="shopping-basket-add"
