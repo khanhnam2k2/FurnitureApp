@@ -4,10 +4,9 @@ import {
   TouchableOpacity,
   FlatList,
   TextInput,
-  Image,
   Alert,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,19 +17,16 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { API_URL } from "../config";
 import axios from "axios";
-import { checkUserLogin } from "../utils";
 
 const validationSchema = Yup.object().shape({
   address: Yup.string()
     .min(8, "Address must be at least 8 characters")
     .required("Required"),
 });
-export default function CheckoutScreen({ navigation }) {
-  const [userData, setUserData] = useState(null);
-  const [userLogin, setUserLogin] = useState(false);
+export default function CheckoutCartScreen({ navigation }) {
   const [loader, setLoader] = useState(false);
   const route = useRoute();
-  const { item, count } = route.params;
+  const { cartData, totalPrice } = route.params;
   const inValidForm = () => {
     Alert.alert("Invalid Form", "Please provide all required fields", [
       {
@@ -39,25 +35,19 @@ export default function CheckoutScreen({ navigation }) {
       },
     ]);
   };
-  useEffect(() => {
-    checkUserLogin(setUserData, setUserLogin);
-  }, []);
   const checkout = async (values) => {
     setLoader(true);
     try {
       const endpoint = `${API_URL}/api/orders`;
       const response = await axios.post(endpoint, {
-        userId: userData._id,
+        userId: cartData.userId,
         address: values.address,
-        products: {
-          productId: item._id,
-          quantity: count,
-        },
-        total: item.price * count,
-        orderType: "buyNow",
+        products: cartData.products,
+        total: totalPrice,
+        orderType: "cart",
       });
       if (response.status === 201) {
-        navigation.replace("Orders");
+        navigation.replace("Order");
       }
     } catch (error) {
       console.log(error);
@@ -76,30 +66,16 @@ export default function CheckoutScreen({ navigation }) {
         </Text>
       </View>
       <View className="flex-1">
-        <View>
-          <Image
-            source={{ uri: item?.imageUrl }}
-            className="w-full h-40 object-cover rounded-lg"
-          />
-        </View>
-        <View className="flex-row items-center justify-between mt-3">
-          <View className="flex-row gap-3 items-center">
-            <Text className="text-2xl font-bold">{item?.title}</Text>
-            <Text className="text-base">
-              ${item?.price}x {count}
-            </Text>
-          </View>
-          <View className="flex-row gap-1 items-center">
-            <Text className="text-base">Thành tiền: </Text>
-            <Text
-              className="text-2xl font-bold"
-              style={{ color: COLORS.primary }}
-            >
-              ${item.price * count}
-            </Text>
-          </View>
-        </View>
-
+        <MasonryList
+          contentContainerStyle={{
+            paddingBottom: 20,
+          }}
+          numColumns={1}
+          data={cartData?.products}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => <ProductInCart item={item} />}
+        />
         <View className="flex-1 mt-4 p-2">
           <Text>Thanh toan</Text>
           <Formik

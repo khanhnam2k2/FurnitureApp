@@ -176,6 +176,12 @@ export default function ProductDetailScreen() {
         {/*  */}
         <View className="flex-row justify-between items-center mb-6 gap-6">
           <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("Checkout", {
+                item,
+                count,
+              })
+            }
             className="flex-1 p-2 rounded-full"
             style={{ backgroundColor: COLORS.black }}
           >

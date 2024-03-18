@@ -138,7 +138,11 @@ export default function CartScreen({ navigation }) {
               </View>
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate("Checkout", { cartData, totalPrice })
+                  navigation.navigate("Checkout", {
+                    cartData,
+                    totalPrice,
+                    orderType: "Cart",
+                  })
                 }
                 className="mt-6 w-full rounded-full px-4 py-2"
                 style={{ backgroundColor: COLORS.primary }}

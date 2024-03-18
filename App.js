@@ -6,6 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
 import {
   CartScreen,
+  CheckoutCartScreen,
   CheckoutScreen,
   FavourtiesScreen,
   LoginScreen,
@@ -97,6 +98,13 @@ export default function App() {
         <Stack.Screen
           name="Checkout"
           component={CheckoutScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="CheckoutCart"
+          component={CheckoutCartScreen}
           options={{
             headerShown: false,
           }}
