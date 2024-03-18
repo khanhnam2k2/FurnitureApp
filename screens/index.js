@@ -8,6 +8,7 @@ import LoginScreen from "./LoginScreen";
 import OrderScreen from "./OrderScreen";
 import FavourtiesScreen from "./FavourtiesScreen";
 import SignUpScreen from "./SignUpScreen";
+import CheckoutScreen from "./CheckoutScreen";
 export {
   HomeScreen,
   SearchScreen,
@@ -19,4 +20,5 @@ export {
   OrderScreen,
   FavourtiesScreen,
   SignUpScreen,
+  CheckoutScreen,
 };

@@ -4,6 +4,7 @@ import ProductRow from "./products/ProductRow";
 import ProductList from "./products/ProductList";
 import Button from "./common/Button";
 import ProductItemView from "./products/ProductItemView";
+import ProductInCart from "./products/ProductInCart";
 export {
   Welcome,
   ProductCardView,
@@ -11,4 +12,5 @@ export {
   ProductList,
   ProductItemView,
   Button,
+  ProductInCart,
 };

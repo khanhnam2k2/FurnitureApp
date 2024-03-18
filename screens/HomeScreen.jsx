@@ -15,7 +15,9 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { checkUserLogin } from "../utils";
+import { useNavigation } from "@react-navigation/native";
 export default function HomeScreen() {
+  const navigation = useNavigation();
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
 
@@ -36,13 +38,14 @@ export default function HomeScreen() {
             <View style={styles.cartCount}>
               <Text className="text-xs">8</Text>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
               <Fontisto name="shopping-bag" size={24} />
             </TouchableOpacity>
           </View>
         </View>
       </View>
       <ScrollView
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: 80,
         }}
