@@ -11,6 +11,8 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { API_URL } from "../config";
 import axios from "axios";
 import { checkUserLogin, handleAddToCart } from "../utils";
+import Animated, { FadeInLeft, FadeInDown } from "react-native-reanimated";
+
 export default function ProductDetailScreen() {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
@@ -54,7 +56,6 @@ export default function ProductDetailScreen() {
       const data = { userId: userData._id };
       const response = await axios.post(endpoint, data);
       if (response.status === 200) {
-        // Cập nhật trạng thái yêu thích dựa trên phản hồi từ máy chủ
         setIsFavourite(response.data);
       }
     } catch (error) {
@@ -76,14 +77,17 @@ export default function ProductDetailScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
-      <View className="background-img flex-row justify-center">
+      <Animated.View
+        entering={FadeInLeft.delay(300)}
+        className="background-img flex-row justify-center"
+      >
         <Image
           source={{
             uri: item?.imageUrl,
           }}
           className="w-full aspect-square"
         />
-      </View>
+      </Animated.View>
       <View className="w-full absolute flex-row justify-between items-center pt-10 ">
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -110,7 +114,10 @@ export default function ProductDetailScreen() {
         style={{ backgroundColor: COLORS.lightWhite, width: SIZES.width }}
       >
         {/* Name and price product */}
-        <View className="flex-row justify-between items-center mb-6">
+        <Animated.View
+          entering={FadeInDown.duration(700).springify().damping(12)}
+          className="flex-row justify-between items-center mb-6"
+        >
           <Text className="font-bold" style={{ fontSize: SIZES.large }}>
             {item?.title}
           </Text>
@@ -122,10 +129,13 @@ export default function ProductDetailScreen() {
               $ {item?.price}
             </Text>
           </View>
-        </View>
+        </Animated.View>
 
         {/* Rating */}
-        <View className="flex-row justify-between items-center mb-6">
+        <Animated.View
+          entering={FadeInDown.delay(200).duration(700).springify().damping(12)}
+          className="flex-row justify-between items-center mb-6"
+        >
           <View className="flex-row gap-2 items-center">
             {[1, 2, 3, 4, 5].map((index) => (
               <Ionicons key={index} name="star" size={24} color="gold" />
@@ -143,10 +153,13 @@ export default function ProductDetailScreen() {
               <SimpleLineIcons name="plus" size={24} />
             </TouchableOpacity>
           </View>
-        </View>
+        </Animated.View>
 
         {/* Description */}
-        <View className="description mb-6">
+        <Animated.View
+          entering={FadeInDown.delay(300).duration(700).springify().damping(12)}
+          className="description mb-6"
+        >
           <Text
             className="font-semibold mb-2"
             style={{ fontSize: SIZES.large - 2 }}
@@ -156,10 +169,11 @@ export default function ProductDetailScreen() {
           <Text className="text-justify" style={{ fontSize: SIZES.small }}>
             {item?.description}
           </Text>
-        </View>
+        </Animated.View>
 
         {/* Location and Delivery */}
-        <View
+        <Animated.View
+          entering={FadeInDown.delay(400).duration(700).springify().damping(12)}
           className="flex-row justify-between items-center p-2 rounded-lg mb-6"
           style={{ backgroundColor: COLORS.secondary }}
         >
@@ -171,10 +185,13 @@ export default function ProductDetailScreen() {
             <MaterialCommunityIcons name="truck-delivery-outline" size={24} />
             <Text>Free Delivery</Text>
           </View>
-        </View>
+        </Animated.View>
 
         {/*  */}
-        <View className="flex-row justify-between items-center mb-6 gap-6">
+        <Animated.View
+          entering={FadeInDown.delay(500).duration(700).springify().damping(12)}
+          className="flex-row justify-between items-center mb-6 gap-6"
+        >
           <TouchableOpacity
             onPress={() =>
               navigation.navigate("Checkout", {
@@ -204,7 +221,7 @@ export default function ProductDetailScreen() {
               color={COLORS.white}
             />
           </TouchableOpacity>
-        </View>
+        </Animated.View>
       </View>
     </View>
   );
