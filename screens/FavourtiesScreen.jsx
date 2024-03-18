@@ -12,12 +12,14 @@ import { COLORS, SIZES } from "../constants";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { API_URL } from "../config";
-import { checkUserLogin } from "../utils";
+import { checkUserLogin, handleAddToCart } from "../utils";
 export default function FavourtiesScreen({ navigation }) {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
   const [favouriteProducts, setFavouriteProducts] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     checkUserLogin(setUserData, setUserLogin);
   }, []);
@@ -56,6 +58,10 @@ export default function FavourtiesScreen({ navigation }) {
       }
     } catch (error) {}
   };
+
+  const addToCart = (userId, productId) => {
+    handleAddToCart(setLoading, userId, productId, 1);
+  };
   return (
     <SafeAreaView className="mx-4">
       <View className="flex-row w-full justify-start items-center  rounded-full p-1 mt-4 mb-14">
@@ -87,6 +93,7 @@ export default function FavourtiesScreen({ navigation }) {
                 onPressDelete={() =>
                   handleDeleteProductFromFavorites(userData._id, item._id)
                 }
+                onPressAddToCart={() => addToCart(userData._id, item._id)}
               />
             )}
           />

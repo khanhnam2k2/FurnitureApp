@@ -2,8 +2,12 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 import React from "react";
 import { COLORS, SIZES } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
-import { MaterialIcons } from "@expo/vector-icons";
-export default function ProductItemView({ item, onPressDelete }) {
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+export default function ProductItemView({
+  item,
+  onPressDelete,
+  onPressAddToCart,
+}) {
   const navigation = useNavigation();
   return (
     <View>
@@ -30,8 +34,16 @@ export default function ProductItemView({ item, onPressDelete }) {
             $ {item?.price}
           </Text>
         </View>
+        {onPressAddToCart && (
+          <TouchableOpacity onPress={() => onPressAddToCart()}>
+            <Ionicons name="add-circle" size={30} color={COLORS.white} />
+          </TouchableOpacity>
+        )}
         {onPressDelete && (
-          <TouchableOpacity className="p-2" onPress={() => onPressDelete()}>
+          <TouchableOpacity
+            className="p-2 ml-4"
+            onPress={() => onPressDelete()}
+          >
             <MaterialIcons
               name="delete-outline"
               size={30}
