@@ -1,12 +1,13 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import React from "react";
-import { COLORS, SIZES } from "../../constants";
+import { COLORS } from "../../constants";
 import { MaterialIcons } from "@expo/vector-icons";
-import { API_URL } from "../../config";
+import Animated, { FadeInLeft } from "react-native-reanimated";
 
 export default function ProductInCart({ item, onDeleteCartItem }) {
   return (
-    <View
+    <Animated.View
+      entering={FadeInLeft.delay(200).duration(700).springify().damping(12)}
       className="flex-1 justify-between items-center mb-4 flex-row  p-4 rounded-lg"
       style={{ backgroundColor: COLORS.white }}
     >
@@ -49,6 +50,6 @@ export default function ProductInCart({ item, onDeleteCartItem }) {
           <MaterialIcons name="cancel" size={20} color={COLORS.primary} />
         </TouchableOpacity>
       )}
-    </View>
+    </Animated.View>
   );
 }

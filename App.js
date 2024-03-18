@@ -37,7 +37,7 @@ export default function App() {
     return null;
   }
   return (
-    <NavigationContainer>
+    <NavigationContainer onReady={onLayoutRootView}>
       <Stack.Navigator>
         <Stack.Screen
           name="Bottom Navigation"

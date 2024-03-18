@@ -1,8 +1,10 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import React from "react";
-import { COLORS, SIZES } from "../../constants";
+import { COLORS } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import Animated, { FadeInDown } from "react-native-reanimated";
+
 export default function ProductItemView({
   item,
   onPressDelete,
@@ -10,7 +12,7 @@ export default function ProductItemView({
 }) {
   const navigation = useNavigation();
   return (
-    <View>
+    <Animated.View entering={FadeInDown.duration(700).springify().damping(12)}>
       <TouchableOpacity
         onPress={() => navigation.navigate("ProductDetail", { item })}
         className="flex-1 justify-between items-center mb-4 flex-row  p-4 rounded-lg"
@@ -52,6 +54,6 @@ export default function ProductItemView({
           </TouchableOpacity>
         )}
       </TouchableOpacity>
-    </View>
+    </Animated.View>
   );
 }
