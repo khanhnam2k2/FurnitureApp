@@ -12,6 +12,7 @@ import { API_URL } from "../config";
 import axios from "axios";
 import { checkUserLogin, handleAddToCart } from "../utils";
 import Animated, { FadeInLeft, FadeInDown } from "react-native-reanimated";
+import Lightbox from "react-native-lightbox-v2";
 
 export default function ProductDetailScreen() {
   const [userData, setUserData] = useState(null);
@@ -88,12 +89,14 @@ export default function ProductDetailScreen() {
         entering={FadeInLeft.delay(300)}
         className="background-img flex-row justify-center"
       >
-        <Image
-          source={{
-            uri: item?.imageUrl,
-          }}
-          className="w-full aspect-square"
-        />
+        <Lightbox>
+          <Image
+            source={{
+              uri: item?.imageUrl,
+            }}
+            className="w-full aspect-square"
+          />
+        </Lightbox>
       </Animated.View>
       <View className="w-full absolute flex-row justify-between items-center pt-10 ">
         <TouchableOpacity

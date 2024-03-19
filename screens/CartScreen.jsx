@@ -99,6 +99,12 @@ export default function CartScreen({ navigation }) {
           !cartData.products ||
           cartData.products.length === 0 ? (
           <View className="flex items-center justify-center mt-10">
+            <LottieView
+              style={{ width: "100%", height: 150, marginBottom: 10 }}
+              source={require("../assets/images/sad.json")}
+              autoPlay
+              loop
+            />
             <Text>Không có sản phẩm nào trong giỏ hàng!</Text>
             <TouchableOpacity
               onPress={() => navigation.navigate("Home")}

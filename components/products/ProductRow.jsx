@@ -3,13 +3,19 @@ import React from "react";
 import { COLORS, SIZES } from "../../constants";
 import useFetch from "../../hook/useFetch";
 import ProductCardView from "./ProductCardView";
+import LottieView from "lottie-react-native";
 
 export default function ProductRow() {
   const { data, isLoading, error } = useFetch();
   return (
     <View className="mt-4">
       {isLoading ? (
-        <ActivityIndicator size={SIZES.xxLarge} color={COLORS.primary} />
+        <LottieView
+          style={{ width: "100%", height: 100 }}
+          source={require("../../assets/images/loading.json")}
+          autoPlay
+          loop
+        />
       ) : error ? (
         <Text>Some thing went wrong</Text>
       ) : (

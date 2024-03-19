@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { API_URL } from "../config";
 import { checkUserLogin, handleAddToCart } from "../utils";
+import LottieView from "lottie-react-native";
 export default function FavourtiesScreen({ navigation }) {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
@@ -74,14 +75,21 @@ export default function FavourtiesScreen({ navigation }) {
       </View>
       <View>
         {isLoading ? (
-          <ActivityIndicator
-            className="mt-10"
-            size={SIZES.xxLarge}
-            color={COLORS.primary}
+          <LottieView
+            style={{ width: "100%", height: 150 }}
+            source={require("../assets/images/loading.json")}
+            autoPlay
+            loop
           />
         ) : favouriteProducts?.length === 0 ? (
           <View className="flex items-center justify-center mt-10">
-            <Text>Không có sản phẩm yêu thích nào</Text>
+            <LottieView
+              style={{ width: "100%", height: 150, marginBottom: 10 }}
+              source={require("../assets/images/sad.json")}
+              autoPlay
+              loop
+            />
+            <Text>Không có sản phẩm yêu thích nào!</Text>
           </View>
         ) : (
           <FlatList

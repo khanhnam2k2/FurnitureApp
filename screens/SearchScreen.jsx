@@ -92,10 +92,13 @@ export default function SearchScreen() {
             marginRight: 20,
           }}
         >
-          <Image
-            source={require("../assets/images/Pose23.png")}
-            style={{ width: 300, height: 300, objectFit: "contain" }}
+          <LottieView
+            style={{ width: "100%", height: 150, marginBottom: 10 }}
+            source={require("../assets/images/empty.json")}
+            autoPlay
+            loop
           />
+          <Text>Không tìm thấy sản phẩm</Text>
         </View>
       ) : (
         <FlatList
