@@ -17,7 +17,18 @@ export const checkUserLogin = async (setUserData, setUserLogin) => {
     console.log(error);
   }
 };
-
+export const getCartItemCount = async (userId) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/api/cart/${userId}/cartItemCount`
+    );
+    if (response.status === 200) {
+      return await response?.data?.itemCount;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 // Hàm xử lý thêm sản phẩm vào giỏ hàng
 export const handleAddToCart = async (
   setLoading,
@@ -25,7 +36,8 @@ export const handleAddToCart = async (
   productId,
   quantity,
   userLogin,
-  navigation
+  navigation,
+  setCartItemCount
 ) => {
   if (userLogin) {
     setLoading(true);
@@ -38,6 +50,8 @@ export const handleAddToCart = async (
       });
       if (response.status === 200) {
         Alert.alert("Notification", response.data);
+        const count = await getCartItemCount(userId);
+        setCartItemCount(count);
       }
     } catch (error) {
       console.log(error);

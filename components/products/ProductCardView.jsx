@@ -4,7 +4,7 @@ import { COLORS, SIZES } from "../../constants";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { checkUserLogin, handleAddToCart } from "../../utils";
-export default function ProductCardView({ item }) {
+export default function ProductCardView({ item, setCartItemCount }) {
   const navigation = useNavigation();
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
@@ -21,8 +21,10 @@ export default function ProductCardView({ item }) {
       item?._id,
       1,
       userLogin,
-      navigation
+      navigation,
+      setCartItemCount
     );
+    // setCartItemCount((prevCount) => prevCount + 1);
   };
   return (
     <TouchableOpacity

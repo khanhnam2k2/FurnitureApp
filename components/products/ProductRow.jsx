@@ -5,7 +5,7 @@ import useFetch from "../../hook/useFetch";
 import ProductCardView from "./ProductCardView";
 import LottieView from "lottie-react-native";
 
-export default function ProductRow() {
+export default function ProductRow({ setCartItemCount }) {
   const { data, isLoading, error } = useFetch();
   return (
     <View className="mt-4">
@@ -22,7 +22,9 @@ export default function ProductRow() {
         <FlatList
           data={data}
           keyExtractor={(item) => item._id}
-          renderItem={({ item }) => <ProductCardView item={item} />}
+          renderItem={({ item }) => (
+            <ProductCardView item={item} setCartItemCount={setCartItemCount} />
+          )}
           horizontal
           contentContainerStyle={{
             columnGap: SIZES.medium,
