@@ -23,22 +23,29 @@ export const handleAddToCart = async (
   setLoading,
   userId,
   productId,
-  quantity
+  quantity,
+  userLogin,
+  navigation
 ) => {
-  setLoading(true);
-  try {
-    const endpoint = `${API_URL}/api/cart/addToCart`;
-    const response = await axios.post(endpoint, {
-      userId: userId,
-      cartItem: productId,
-      quantity: quantity,
-    });
-    if (response.status === 200) {
-      Alert.alert("Notification", response.data);
+  if (userLogin) {
+    setLoading(true);
+    try {
+      const endpoint = `${API_URL}/api/cart/addToCart`;
+      const response = await axios.post(endpoint, {
+        userId: userId,
+        cartItem: productId,
+        quantity: quantity,
+      });
+      if (response.status === 200) {
+        Alert.alert("Notification", response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.log(error);
-  } finally {
-    setLoading(false);
+  } else {
+    // Alert.alert("Notification", "Please login first");
+    navigation.navigate("Login");
   }
 };

@@ -15,6 +15,7 @@ import { checkUserLogin } from "../utils";
 import axios from "axios";
 import MasonryList from "@react-native-seoul/masonry-list";
 import { useFocusEffect } from "@react-navigation/native";
+import LottieView from "lottie-react-native";
 
 export default function CartScreen({ navigation }) {
   const [userData, setUserData] = useState(null);
@@ -88,10 +89,11 @@ export default function CartScreen({ navigation }) {
       </View>
       <View className="space-y-6 flex-1">
         {isLoading ? (
-          <ActivityIndicator
-            className="mt-10"
-            size={SIZES.xxLarge}
-            color={COLORS.primary}
+          <LottieView
+            style={{ width: "100%", height: 150 }}
+            source={require("../assets/images/loading.json")}
+            autoPlay
+            loop
           />
         ) : !cartData ||
           !cartData.products ||
@@ -138,7 +140,7 @@ export default function CartScreen({ navigation }) {
               </View>
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate("Checkout", {
+                  navigation.navigate("CheckoutCart", {
                     cartData,
                     totalPrice,
                     orderType: "Cart",

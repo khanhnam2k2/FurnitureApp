@@ -47,7 +47,7 @@ export default function CheckoutCartScreen({ navigation }) {
         orderType: "cart",
       });
       if (response.status === 201) {
-        navigation.replace("Order");
+        navigation.replace("Orders");
       }
     } catch (error) {
       console.log(error);

@@ -3,18 +3,27 @@ import React from "react";
 import { COLORS, SIZES } from "../../constants";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import LottieView from "lottie-react-native";
 
 export default function Welcome() {
   const navigation = useNavigation();
   return (
     <View>
       <View className="w-full">
-        <Text className="font-extrabold text-4xl mt-2">Find The Most</Text>
+        <View className="flex-row items-center gap-2">
+          <Text className="font-extrabold text-4xl mt-2">Find The Most</Text>
+          <LottieView
+            style={{ width: 120, height: 120 }}
+            source={require("../../assets/images/hello.json")}
+            autoPlay
+            loop
+          />
+        </View>
         <Text
-          className="font-extrabold text-4xl mt-2"
+          className="font-extrabold text-4xl"
           style={{ color: COLORS.primary }}
         >
-          Luxuriours Furniture{" "}
+          Luxuriours Furniture
         </Text>
       </View>
       <View

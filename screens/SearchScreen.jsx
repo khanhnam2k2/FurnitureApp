@@ -14,7 +14,7 @@ import { COLORS, SIZES } from "../constants";
 import axios from "axios";
 import { API_URL } from "../config";
 import { ProductItemView } from "../components";
-
+import LottieView from "lottie-react-native";
 export default function SearchScreen() {
   const [searchKey, setSearchKey] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -75,7 +75,13 @@ export default function SearchScreen() {
 
       {isLoading ? (
         <View style={{ marginTop: 24 }}>
-          <ActivityIndicator size="large" color={COLORS.primary} />
+          <LottieView
+            style={{ width: "100%", height: 150 }}
+            source={require("../assets/images/loading.json")}
+            autoPlay
+            loop
+          />
+          {/* <ActivityIndicator size="large" color={COLORS.primary} /> */}
         </View>
       ) : isSearched && searchResults.length === 0 ? (
         <View

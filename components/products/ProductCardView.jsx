@@ -15,7 +15,14 @@ export default function ProductCardView({ item }) {
   }, []);
 
   const addToCart = () => {
-    handleAddToCart(setLoading, userData._id, item._id, 1);
+    handleAddToCart(
+      setLoading,
+      userData?._id,
+      item?._id,
+      1,
+      userLogin,
+      navigation
+    );
   };
   return (
     <TouchableOpacity

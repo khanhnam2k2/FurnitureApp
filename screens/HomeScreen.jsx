@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { COLORS, SIZES } from "../constants";
-import { Ionicons, Fontisto } from "@expo/vector-icons";
+import { Ionicons, Fontisto, AntDesign } from "@expo/vector-icons";
 import { ProductRow, Welcome } from "../components";
 import Carousel from "../components/home/Carousel";
 import Headings from "../components/home/Headings";
@@ -35,12 +35,22 @@ export default function HomeScreen() {
             {userData ? userData.location : "Shaege China"}
           </Text>
           <View style={{ alignItems: "flex-end" }}>
-            <View style={styles.cartCount}>
-              <Text className="text-xs">8</Text>
-            </View>
-            <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
-              <Fontisto name="shopping-bag" size={24} />
-            </TouchableOpacity>
+            {userLogin ? (
+              <View>
+                <View style={styles.cartCount}>
+                  <Text className="text-xs">8</Text>
+                </View>
+                <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
+                  <Fontisto name="shopping-bag" size={24} />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View>
+                <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                  <AntDesign name="login" size={24} color={COLORS.primary} />
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </View>
       </View>

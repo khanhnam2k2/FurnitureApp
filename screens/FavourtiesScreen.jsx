@@ -60,7 +60,7 @@ export default function FavourtiesScreen({ navigation }) {
   };
 
   const addToCart = (userId, productId) => {
-    handleAddToCart(setLoading, userId, productId, 1);
+    handleAddToCart(setLoading, userId, productId, 1, userLogin, navigation);
   };
   return (
     <SafeAreaView className="mx-4">

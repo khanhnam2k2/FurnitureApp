@@ -47,7 +47,6 @@ export default function SignUpScreen({ navigation }) {
     try {
       const endpoint = `${API_URL}/api/register`;
       const data = values;
-      console.log(values);
 
       const response = await axios.post(endpoint, data);
       if (response.status === 201) {

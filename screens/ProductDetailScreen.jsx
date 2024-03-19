@@ -63,7 +63,14 @@ export default function ProductDetailScreen() {
     }
   };
   const addToCart = () => {
-    handleAddToCart(setLoading, userData._id, item._id, count);
+    handleAddToCart(
+      setLoading,
+      userData._id,
+      item._id,
+      count,
+      userLogin,
+      navigation
+    );
   };
 
   const increment = () => {
