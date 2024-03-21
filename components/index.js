@@ -5,6 +5,7 @@ import ProductList from "./products/ProductList";
 import Button from "./common/Button";
 import ProductItemView from "./products/ProductItemView";
 import ProductInCart from "./products/ProductInCart";
+import OrderCardView from "./orders/OrderCardView";
 export {
   Welcome,
   ProductCardView,
@@ -13,4 +14,5 @@ export {
   ProductItemView,
   Button,
   ProductInCart,
+  OrderCardView,
 };

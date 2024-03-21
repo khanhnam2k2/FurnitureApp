@@ -192,21 +192,6 @@ export default function ProfileScreen({ navigation }) {
                     </Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => clearCache()}>
-                  <View className="flex-row border-b-2 border-gray-200 px-7 py-3 gap-4 items-center">
-                    <MaterialCommunityIcons
-                      name="cached"
-                      size={24}
-                      color={COLORS.primary}
-                    />
-                    <Text
-                      className="text-base font-bold"
-                      style={{ color: COLORS.primary }}
-                    >
-                      Clear cache
-                    </Text>
-                  </View>
-                </TouchableOpacity>
                 <TouchableOpacity onPress={() => deleteAccount()}>
                   <View className="flex-row  border-b-2 border-gray-200 px-7 py-3 gap-4 items-center">
                     <AntDesign

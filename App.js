@@ -11,6 +11,7 @@ import {
   FavourtiesScreen,
   LoginScreen,
   NewRivalsScreen,
+  OrderDetailScreen,
   OrderScreen,
   ProductDetailScreen,
   SignUpScreen,
@@ -84,6 +85,13 @@ export default function App() {
         <Stack.Screen
           name="Orders"
           component={OrderScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="OrderDetail"
+          component={OrderDetailScreen}
           options={{
             headerShown: false,
           }}
