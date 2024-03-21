@@ -55,7 +55,9 @@ export default function HomeScreen() {
             {userLogin ? (
               <Animated.View entering={FadeInRight.delay(200).duration(700)}>
                 <View style={styles.cartCount}>
-                  <Text className="text-xs">{cartItemCount}</Text>
+                  <Text className="text-xs text-white font-bold">
+                    {cartItemCount}
+                  </Text>
                 </View>
                 <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
                   <Fontisto name="shopping-bag" size={24} />
