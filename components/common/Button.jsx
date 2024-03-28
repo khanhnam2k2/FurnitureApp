@@ -14,7 +14,7 @@ export default function Button({ title, onPress, isValid, loader }) {
       {!loader ? (
         <Text className="font-bold text-base text-white">{title}</Text>
       ) : (
-        <ActivityIndicator size={SIZES.large} color={COLORS.primary} />
+        <ActivityIndicator size={SIZES.large} color={COLORS.white} />
       )}
     </TouchableOpacity>
   );

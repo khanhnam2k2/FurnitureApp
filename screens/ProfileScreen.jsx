@@ -6,28 +6,24 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { COLORS, SIZES } from "../constants";
-import { StatusBar } from "expo-status-bar";
 import {
   AntDesign,
   MaterialCommunityIcons,
   SimpleLineIcons,
 } from "@expo/vector-icons";
+import { AuthContext } from "../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { checkUserLogin } from "../utils";
 export default function ProfileScreen({ navigation }) {
-  const [userData, setUserData] = useState(null);
-  const [userLogin, setUserLogin] = useState(false);
-  useEffect(() => {
-    checkUserLogin(setUserData, setUserLogin);
-  }, []);
+  const { user, setUser, isLogined, setIsLogined } = useContext(AuthContext);
+
   const userLogout = async () => {
-    const id = await AsyncStorage.getItem("id");
-    const userId = `user${JSON.parse(id)}`;
     try {
-      await AsyncStorage.multiRemove([userId, "id"]);
       navigation.replace("Bottom Navigation");
+      setIsLogined(false);
+      setUser(null);
+      await AsyncStorage.multiRemove(["user", "isLogined"]);
     } catch (error) {
       console.log(error);
     }
@@ -108,11 +104,11 @@ export default function ProfileScreen({ navigation }) {
               className="mt-2 text-base font-bold mb-2"
               style={{ color: COLORS.primary }}
             >
-              {userLogin === false
+              {isLogined === false
                 ? "Please login into your account"
-                : userData?.username}
+                : user?.username}
             </Text>
-            {userLogin === false ? (
+            {isLogined === false ? (
               <TouchableOpacity onPress={() => navigation.navigate("Login")}>
                 <View
                   style={{ backgroundColor: COLORS.secondary }}
@@ -127,15 +123,14 @@ export default function ProfileScreen({ navigation }) {
                 className="px-4 py-2 rounded-full"
               >
                 <Text className="font-bold">
-                  {" "}
-                  {userLogin === false
+                  {isLogined === false
                     ? "Please login into your account"
-                    : userData?.email}
+                    : user?.email}
                 </Text>
               </View>
             )}
 
-            {userLogin === false ? (
+            {isLogined === false ? (
               <View></View>
             ) : (
               <View

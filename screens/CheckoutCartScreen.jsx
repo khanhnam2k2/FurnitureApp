@@ -6,10 +6,10 @@ import {
   TextInput,
   Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRoute } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Feather } from "@expo/vector-icons";
 import { COLORS } from "../constants";
 import { Button, ProductInCart } from "../components";
 import MasonryList from "@react-native-seoul/masonry-list";
@@ -17,14 +17,20 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { API_URL } from "../config";
 import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
+import GlobalApi from "../GlobalApi";
 
 const validationSchema = Yup.object().shape({
   address: Yup.string()
     .min(8, "Address must be at least 8 characters")
     .required("Required"),
+  phone: Yup.string()
+    .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+    .required("Required"),
 });
 export default function CheckoutCartScreen({ navigation }) {
-  const [loader, setLoader] = useState(false);
+  const { user, isLogined } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
   const route = useRoute();
   const { cartData, totalPrice } = route.params;
   const inValidForm = () => {
@@ -35,25 +41,23 @@ export default function CheckoutCartScreen({ navigation }) {
       },
     ]);
   };
-  const checkout = async (values) => {
-    setLoader(true);
-    try {
-      const endpoint = `${API_URL}/api/orders`;
-      const response = await axios.post(endpoint, {
-        userId: cartData.userId,
-        address: values.address,
-        products: cartData.products,
-        total: totalPrice,
-        orderType: "cart",
-      });
-      if (response.status === 201) {
+  const checkout = (values) => {
+    setLoading(true);
+    const data = {
+      userId: user?._id,
+      address: values?.address,
+      phone: values?.phone,
+      products: cartData,
+      total: totalPrice,
+      orderType: "cart",
+    };
+
+    GlobalApi.checkout(data).then((resp) => {
+      if (resp.status === 201) {
         navigation.replace("Orders");
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoader(false);
-    }
+      setLoading(false);
+    });
   };
   return (
     <SafeAreaView className="mx-4 flex-1">
@@ -71,7 +75,7 @@ export default function CheckoutCartScreen({ navigation }) {
             paddingBottom: 20,
           }}
           numColumns={1}
-          data={cartData?.products}
+          data={cartData}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => <ProductInCart item={item} />}
@@ -80,7 +84,7 @@ export default function CheckoutCartScreen({ navigation }) {
           <Text>Thanh toan</Text>
           <Formik
             className="flex-1"
-            initialValues={{ address: "" }}
+            initialValues={{ address: "", phone: "" }}
             validationSchema={validationSchema}
             onSubmit={(values) => checkout(values)}
           >
@@ -95,15 +99,49 @@ export default function CheckoutCartScreen({ navigation }) {
               setFieldTouched,
             }) => (
               <View className="">
-                <View className="mb-5 mx-5">
-                  <Text className="mb-1 me-1 text-right text-sm">Address</Text>
+                <View className="mb-3 mx-5">
+                  <Text className="mb-1 me-1 text-right text-sm">SDT</Text>
                   <View
                     className="border h-12 flex-row rounded-lg px-3 items-center"
+                    style={{
+                      backgroundColor: COLORS.lightWhite,
+                      borderColor: touched.phone
+                        ? COLORS.primary
+                        : COLORS.offwhite,
+                    }}
+                  >
+                    <Feather name="phone" size={20} color={COLORS.gray} />
+                    <TextInput
+                      className="ml-2 flex-1"
+                      placeholder="Enter phone"
+                      onFocus={() => {
+                        setFieldTouched("phone");
+                      }}
+                      onBlur={() => {
+                        setFieldTouched("phone", "");
+                      }}
+                      value={values.phone}
+                      onChangeText={handleChange("phone")}
+                      autoCapitalize="none"
+                      keyboardType="numeric"
+                    />
+                  </View>
+                  {touched.phone && errors.phone && (
+                    <Text className="text-red-500 mt-1 ml-1 text-sm">
+                      {errors.phone}
+                    </Text>
+                  )}
+                </View>
+                <View className="mb-3 mx-5">
+                  <Text className="mb-1 me-1 text-right text-sm">Address</Text>
+                  <View
+                    className="border h-20 flex-row rounded-lg px-3 items-center"
                     style={{
                       backgroundColor: COLORS.lightWhite,
                       borderColor: touched.address
                         ? COLORS.primary
                         : COLORS.offwhite,
+                      width: "100%",
                     }}
                   >
                     <Ionicons
@@ -124,6 +162,8 @@ export default function CheckoutCartScreen({ navigation }) {
                       value={values.address}
                       onChangeText={handleChange("address")}
                       autoCapitalize="none"
+                      multiline={true}
+                      style={{ maxHeight: 120 }}
                     />
                   </View>
                   {touched.address && errors.address && (
@@ -134,7 +174,7 @@ export default function CheckoutCartScreen({ navigation }) {
                 </View>
 
                 <Button
-                  loader={loader}
+                  loader={loading}
                   onPress={isValid ? handleSubmit : () => inValidForm()}
                   title={"C H E C K  O U T"}
                   isValid={isValid}

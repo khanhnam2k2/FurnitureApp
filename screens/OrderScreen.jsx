@@ -1,41 +1,32 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from "../constants";
 import { Ionicons } from "@expo/vector-icons";
-import { checkUserLogin } from "../utils";
 import axios from "axios";
 import { API_URL } from "../config";
 import LottieView from "lottie-react-native";
 import MasonryList from "@react-native-seoul/masonry-list";
 import { OrderCardView } from "../components";
+import { AuthContext } from "../context/AuthContext";
+import GlobalApi from "../GlobalApi";
 
 export default function OrderScreen({ navigation }) {
+  const { user, isLogined } = useContext(AuthContext);
   const [userOrders, setUserOrders] = useState([]);
-  const [userData, setUserData] = useState(null);
-  const [userLogin, setUserLogin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {
-    checkUserLogin(setUserData, setUserLogin);
-  }, []);
 
   useEffect(() => {
     getUserOrders();
-  }, [userData?._id]);
+  }, [user?._id]);
   const getUserOrders = async () => {
     setIsLoading(true);
-    try {
-      const response = await axios.get(
-        `${API_URL}/api/orders/${userData?._id}`
-      );
-      if (response.status === 200) {
-        setUserOrders(response?.data);
+    GlobalApi.getUserOrders(user?._id).then((resp) => {
+      if (resp.status === 200) {
+        setUserOrders(resp?.data);
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   return (
@@ -55,7 +46,7 @@ export default function OrderScreen({ navigation }) {
           autoPlay
           loop
         />
-      ) : userOrders.length > 0 ? (
+      ) : userOrders?.length > 0 ? (
         <View className="flex-1">
           <Text className="font-bold text-lg mb-4">Thông tin đặt hàng</Text>
           <View className="flex-1">

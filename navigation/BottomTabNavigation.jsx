@@ -1,9 +1,13 @@
-import { View, Text } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants/index";
-import { HomeScreen, SearchScreen, ProfileScreen } from "../screens/index";
+import {
+  HomeScreen,
+  SearchScreen,
+  ProfileScreen,
+  CartScreen,
+} from "../screens/index";
 const Tab = createBottomTabNavigator();
 const screenOptions = {
   tabBarShowLabel: false,
@@ -44,6 +48,21 @@ export default function BottomTabNavigation() {
             return (
               <Ionicons
                 name={"search-sharp"}
+                size={24}
+                color={focused ? COLORS.primary : COLORS.gray2}
+              />
+            );
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{
+          tabBarIcon: ({ focused }) => {
+            return (
+              <Ionicons
+                name={"cart"}
                 size={24}
                 color={focused ? COLORS.primary : COLORS.gray2}
               />

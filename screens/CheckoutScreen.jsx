@@ -2,33 +2,33 @@ import {
   View,
   Text,
   TouchableOpacity,
-  FlatList,
   TextInput,
   Image,
   Alert,
+  ActivityIndicator,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRoute } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Feather } from "@expo/vector-icons";
 import { COLORS } from "../constants";
-import { Button, ProductInCart } from "../components";
-import MasonryList from "@react-native-seoul/masonry-list";
+import { Button } from "../components";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { API_URL } from "../config";
-import axios from "axios";
-import { checkUserLogin } from "../utils";
+import { AuthContext } from "../context/AuthContext";
+import GlobalApi from "../GlobalApi";
 
 const validationSchema = Yup.object().shape({
   address: Yup.string()
     .min(8, "Address must be at least 8 characters")
     .required("Required"),
+  phone: Yup.string()
+    .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+    .required("Required"),
 });
 export default function CheckoutScreen({ navigation }) {
-  const [userData, setUserData] = useState(null);
-  const [userLogin, setUserLogin] = useState(false);
-  const [loader, setLoader] = useState(false);
+  const { user, isLogined } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
   const route = useRoute();
   const { item, count } = route.params;
   const inValidForm = () => {
@@ -39,31 +39,26 @@ export default function CheckoutScreen({ navigation }) {
       },
     ]);
   };
-  useEffect(() => {
-    checkUserLogin(setUserData, setUserLogin);
-  }, []);
-  const checkout = async (values) => {
-    setLoader(true);
-    try {
-      const endpoint = `${API_URL}/api/orders`;
-      const response = await axios.post(endpoint, {
-        userId: userData._id,
-        address: values.address,
-        products: {
-          productId: item._id,
-          quantity: count,
-        },
-        total: item.price * count,
-        orderType: "buyNow",
-      });
-      if (response.status === 201) {
+
+  const checkout = (values) => {
+    setLoading(true);
+    const data = {
+      userId: user?._id,
+      address: values?.address,
+      phone: values?.phone,
+      products: {
+        productId: item?._id,
+        quantity: count,
+      },
+      total: item?.price * count,
+      orderType: "buyNow",
+    };
+    GlobalApi.checkout(data).then((resp) => {
+      if (resp.status === 201) {
         navigation.replace("Orders");
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoader(false);
-    }
+      setLoading(false);
+    });
   };
   return (
     <SafeAreaView className="mx-4 flex-1">
@@ -104,7 +99,7 @@ export default function CheckoutScreen({ navigation }) {
           <Text>Thanh toan</Text>
           <Formik
             className="flex-1"
-            initialValues={{ address: "" }}
+            initialValues={{ address: "", phone: "" }}
             validationSchema={validationSchema}
             onSubmit={(values) => checkout(values)}
           >
@@ -119,6 +114,39 @@ export default function CheckoutScreen({ navigation }) {
               setFieldTouched,
             }) => (
               <View className="">
+                <View className="mb-3 mx-5">
+                  <Text className="mb-1 me-1 text-right text-sm">SDT</Text>
+                  <View
+                    className="border h-12 flex-row rounded-lg px-3 items-center"
+                    style={{
+                      backgroundColor: COLORS.lightWhite,
+                      borderColor: touched.phone
+                        ? COLORS.primary
+                        : COLORS.offwhite,
+                    }}
+                  >
+                    <Feather name="phone" size={20} color={COLORS.gray} />
+                    <TextInput
+                      className="ml-2 flex-1"
+                      placeholder="Enter phone"
+                      onFocus={() => {
+                        setFieldTouched("phone");
+                      }}
+                      onBlur={() => {
+                        setFieldTouched("phone", "");
+                      }}
+                      value={values.phone}
+                      onChangeText={handleChange("phone")}
+                      autoCapitalize="none"
+                      keyboardType="numeric"
+                    />
+                  </View>
+                  {touched.phone && errors.phone && (
+                    <Text className="text-red-500 mt-1 ml-1 text-sm">
+                      {errors.phone}
+                    </Text>
+                  )}
+                </View>
                 <View className="mb-5 mx-5">
                   <Text className="mb-1 me-1 text-right text-sm">Address</Text>
                   <View
@@ -158,9 +186,15 @@ export default function CheckoutScreen({ navigation }) {
                 </View>
 
                 <Button
-                  loader={loader}
+                  loader={loading}
                   onPress={isValid ? handleSubmit : () => inValidForm()}
-                  title={"C H E C K  O U T"}
+                  title={
+                    loading ? (
+                      <ActivityIndicator size={24} color={COLORS.white} />
+                    ) : (
+                      "C H E C K  O U T"
+                    )
+                  }
                   isValid={isValid}
                 />
               </View>

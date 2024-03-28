@@ -1,16 +1,42 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+} from "react-native";
+import React, { useContext, useState } from "react";
 import { COLORS } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { AuthContext } from "../../context/AuthContext";
+import GlobalApi from "../../GlobalApi";
 
-export default function ProductItemView({
-  item,
-  onPressDelete,
-  onPressAddToCart,
-}) {
+export default function ProductItemView({ item, onPressDelete }) {
+  const { user, isLogined, setCartItemCount } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+
   const navigation = useNavigation();
+  const addToCart = () => {
+    setLoading(true);
+    const data = {
+      userId: user?._id,
+      cartItem: item?._id,
+      quantity: 1,
+    };
+    if (isLogined) {
+      GlobalApi.addToCart(data).then((resp) => {
+        if (resp.status === 200) {
+          // setCartItemCount((prev) => prev + 1);
+          navigation.navigate("Cart");
+        }
+      });
+    } else {
+      navigation.navigate("Login");
+    }
+    setLoading(false);
+  };
   return (
     <Animated.View entering={FadeInDown.duration(700).springify().damping(12)}>
       <TouchableOpacity
@@ -36,11 +62,15 @@ export default function ProductItemView({
             $ {item?.price}
           </Text>
         </View>
-        {onPressAddToCart && (
-          <TouchableOpacity onPress={() => onPressAddToCart()}>
+
+        <TouchableOpacity onPress={() => addToCart()}>
+          {loading ? (
+            <ActivityIndicator size={24} color={COLORS.white} />
+          ) : (
             <Ionicons name="add-circle" size={30} color={COLORS.white} />
-          </TouchableOpacity>
-        )}
+          )}
+        </TouchableOpacity>
+
         {onPressDelete && (
           <TouchableOpacity
             className="p-2 ml-4"

@@ -1,11 +1,11 @@
-import { View, Text, FlatList, ActivityIndicator } from "react-native";
+import { View, Text, FlatList } from "react-native";
 import React from "react";
 import { COLORS, SIZES } from "../../constants";
 import useFetch from "../../hook/useFetch";
 import ProductCardView from "./ProductCardView";
 import LottieView from "lottie-react-native";
 
-export default function ProductRow({ setCartItemCount }) {
+export default function ProductRow() {
   const { data, isLoading, error } = useFetch();
   return (
     <View className="mt-4">
@@ -22,9 +22,7 @@ export default function ProductRow({ setCartItemCount }) {
         <FlatList
           data={data}
           keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <ProductCardView item={item} setCartItemCount={setCartItemCount} />
-          )}
+          renderItem={({ item }) => <ProductCardView item={item} />}
           horizontal
           contentContainerStyle={{
             columnGap: SIZES.medium,

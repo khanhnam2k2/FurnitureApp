@@ -1,5 +1,11 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Ionicons,
   SimpleLineIcons,
@@ -8,15 +14,13 @@ import {
 } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { API_URL } from "../config";
-import axios from "axios";
-import { checkUserLogin, handleAddToCart } from "../utils";
 import Animated, { FadeInLeft, FadeInDown } from "react-native-reanimated";
 import Lightbox from "react-native-lightbox-v2";
+import { AuthContext } from "../context/AuthContext";
+import GlobalApi from "../GlobalApi";
 
 export default function ProductDetailScreen() {
-  const [userData, setUserData] = useState(null);
-  const [userLogin, setUserLogin] = useState(false);
+  const { user, isLogined } = useContext(AuthContext);
   const [isFavourite, setIsFavourite] = useState(false);
   const [loading, setLoading] = useState(false);
   const route = useRoute();
@@ -25,53 +29,44 @@ export default function ProductDetailScreen() {
   const [count, setCount] = useState(1);
 
   useEffect(() => {
-    checkUserLogin(setUserData, setUserLogin);
-  }, []);
-
-  useEffect(() => {
-    if (userData) {
+    if (user) {
       checkUserFavourite();
     }
-  }, [userData]);
+  }, [user]);
 
   const checkUserFavourite = async () => {
-    try {
-      const response = await axios.get(
-        `${API_URL}/api/user/${userData._id}/favorites`
-      );
-      if (response.status === 200) {
-        const favoriteProducts = response.data;
+    GlobalApi.checkUserFavourite(user?._id).then((resp) => {
+      if (resp.status === 200) {
+        const favoriteProducts = resp.data;
         const foundProduct = favoriteProducts.find(
           (product) => product._id === item._id
         );
         setIsFavourite(!!foundProduct);
       }
-    } catch (error) {
-      console.error(error);
-    }
+    });
   };
 
   const handleFavorite = async () => {
-    try {
-      const endpoint = `${API_URL}/api/products/${item._id}/favorites`;
-      const data = { userId: userData._id };
-      const response = await axios.post(endpoint, data);
-      if (response.status === 200) {
-        setIsFavourite(response.data);
+    const data = { userId: user?._id };
+    GlobalApi.handleFavorite(item?._id, data).then((resp) => {
+      if (resp.status === 200) {
+        setIsFavourite(resp.data);
       }
-    } catch (error) {
-      console.error(error);
-    }
+    });
   };
   const addToCart = () => {
-    handleAddToCart(
-      setLoading,
-      userData._id,
-      item._id,
-      count,
-      userLogin,
-      navigation
-    );
+    setLoading(true);
+    const data = {
+      userId: user?._id,
+      cartItem: item?._id,
+      quantity: count,
+    };
+    GlobalApi.addToCart(data).then((resp) => {
+      if (resp.status === 200) {
+        navigation.navigate("Cart");
+      }
+      setLoading(false);
+    });
   };
 
   const increment = () => {
@@ -107,7 +102,7 @@ export default function ProductDetailScreen() {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() =>
-            userLogin ? handleFavorite() : navigation.navigate("Login")
+            isLogined ? handleFavorite() : navigation.navigate("Login")
           }
           className="p-2 rounded-full mr-4 bg-white"
         >
@@ -225,11 +220,15 @@ export default function ProductDetailScreen() {
             className="flex-row justify-center items-center w-20 p-2 rounded-3xl"
             style={{ backgroundColor: loading ? COLORS.gray : COLORS.primary }}
           >
-            <Fontisto
-              name="shopping-basket-add"
-              size={24}
-              color={COLORS.white}
-            />
+            {loading ? (
+              <ActivityIndicator size={24} color={COLORS.primary} />
+            ) : (
+              <Fontisto
+                name="shopping-basket-add"
+                size={24}
+                color={COLORS.white}
+              />
+            )}
           </TouchableOpacity>
         </Animated.View>
       </View>

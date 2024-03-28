@@ -1,30 +1,44 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import React, { useContext, useState } from "react";
 import { COLORS, SIZES } from "../../constants";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { checkUserLogin, handleAddToCart } from "../../utils";
-export default function ProductCardView({ item, setCartItemCount }) {
+import { AuthContext } from "../../context/AuthContext";
+import GlobalApi from "../../GlobalApi";
+export default function ProductCardView({ item }) {
+  const { user, isLogined, setCartItemCount } = useContext(AuthContext);
   const navigation = useNavigation();
-  const [userData, setUserData] = useState(null);
-  const [userLogin, setUserLogin] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    checkUserLogin(setUserData, setUserLogin);
-  }, []);
-
+  const getCartItemCount = () => {
+    GlobalApi.getCartItemCount(user?._id).then((resp) => {
+      setCartItemCount(resp?.data?.itemCount);
+    });
+  };
   const addToCart = () => {
-    handleAddToCart(
-      setLoading,
-      userData?._id,
-      item?._id,
-      1,
-      userLogin,
-      navigation,
-      setCartItemCount
-    );
-    // setCartItemCount((prevCount) => prevCount + 1);
+    setLoading(true);
+    const data = {
+      userId: user?._id,
+      cartItem: item?._id,
+      quantity: 1,
+    };
+    if (isLogined) {
+      GlobalApi.addToCart(data).then((resp) => {
+        if (resp.status === 200) {
+          getCartItemCount();
+          Alert.alert("Awesome!", "Successfully added");
+        }
+      });
+    } else {
+      navigation.navigate("Login");
+    }
+    setLoading(false);
   };
   return (
     <TouchableOpacity
@@ -61,7 +75,11 @@ export default function ProductCardView({ item, setCartItemCount }) {
               ${item?.price}
             </Text>
             <TouchableOpacity disabled={loading} onPress={() => addToCart()}>
-              <Ionicons name="add-circle" size={35} color={COLORS.primary} />
+              {loading ? (
+                <ActivityIndicator size={24} color={COLORS.primary} />
+              ) : (
+                <Ionicons name="add-circle" size={35} color={COLORS.primary} />
+              )}
             </TouchableOpacity>
           </View>
         </View>

@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { COLORS, SIZES } from "../constants";
 import { Ionicons, Fontisto, AntDesign } from "@expo/vector-icons";
 import { ProductRow, Welcome } from "../components";
@@ -13,34 +13,28 @@ import Carousel from "../components/home/Carousel";
 import Headings from "../components/home/Headings";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { checkUserLogin, getCartItemCount } from "../utils";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import axios from "axios";
-import { API_URL } from "../config";
 import Animated, { FadeInRight } from "react-native-reanimated";
+import { AuthContext } from "../context/AuthContext";
+import GlobalApi from "../GlobalApi";
+
 export default function HomeScreen() {
+  const { user, isLogined, cartItemCount, setCartItemCount } =
+    useContext(AuthContext);
   const navigation = useNavigation();
-  const [userData, setUserData] = useState(null);
-  const [userLogin, setUserLogin] = useState(false);
-  const [cartItemCount, setCartItemCount] = useState(0);
+  const getCartItemCount = () => {
+    GlobalApi.getCartItemCount(user?._id).then((resp) => {
+      setCartItemCount(resp?.data?.itemCount);
+    });
+  };
   useEffect(() => {
-    getCartItemCount(userData?._id);
-    checkUserLogin(setUserData, setUserLogin);
+    getCartItemCount(user?._id);
   }, []);
+
   useFocusEffect(
     useCallback(() => {
-      const fetchCartItemCount = async () => {
-        try {
-          const count = await getCartItemCount(userData?._id);
-          setCartItemCount(count);
-        } catch (error) {
-          console.error("Error fetching cart item count:", error);
-        }
-      };
-
-      fetchCartItemCount();
-    }, [userData?._id])
+      getCartItemCount();
+    }, [user?._id])
   );
   return (
     <SafeAreaView className="flex-1 mx-4">
@@ -49,10 +43,10 @@ export default function HomeScreen() {
         <View className="flex-row justify-between items-center">
           <Ionicons name="location-outline" size={24} />
           <Text style={styles.locationText}>
-            {userData ? userData.location : "Shaege China"}
+            {user ? user.username : "Shaege China"}
           </Text>
           <View style={{ alignItems: "flex-end" }}>
-            {userLogin ? (
+            {isLogined ? (
               <Animated.View entering={FadeInRight.delay(200).duration(700)}>
                 <View style={styles.cartCount}>
                   <Text className="text-xs text-white font-bold">
@@ -82,7 +76,7 @@ export default function HomeScreen() {
         <Welcome />
         <Carousel />
         <Headings />
-        <ProductRow setCartItemCount={setCartItemCount} />
+        <ProductRow />
       </ScrollView>
     </SafeAreaView>
   );

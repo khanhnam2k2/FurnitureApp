@@ -7,7 +7,7 @@ import {
   TextInput,
   Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
@@ -15,9 +15,9 @@ import { Button } from "../components";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { API_URL } from "../config";
-import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "../context/AuthContext";
+import GlobalApi from "../GlobalApi";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
@@ -27,8 +27,8 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function LoginScreen({ navigation }) {
+  const { user, setUser, isLogined, setIsLogined } = useContext(AuthContext);
   const [loader, setLoader] = useState(false);
-  const [responseData, setResponseData] = useState(null);
   const [obsecureText, setObsecureText] = useState(true);
   const inValidForm = () => {
     Alert.alert("Invalid Form", "Please provide all required fields", [
@@ -39,41 +39,41 @@ export default function LoginScreen({ navigation }) {
       { defaultIndex: 1 },
     ]);
   };
-
-  const login = async (values) => {
+  const login = (values) => {
     setLoader(true);
-    try {
-      const endpoint = `${API_URL}/api/login`;
-      const data = values;
-      const response = await axios.post(endpoint, data);
-      if (response.status === 200) {
+    const data = values;
+    GlobalApi.login(data)
+      .then((resp) => {
+        if (!resp.data.error) {
+          setIsLogined(true);
+          setUser(resp?.data);
+          AsyncStorage.setItem("isLogined", JSON.stringify(true));
+          AsyncStorage.setItem("user", JSON.stringify(resp?.data));
+          navigation.replace("Bottom Navigation");
+          setLoader(false);
+        } else {
+          setLoader(false);
+          Alert.alert("Error Logging in", resp?.data?.error, [
+            {
+              text: "Cancel",
+              onPress: () => {},
+            },
+          ]);
+        }
+      })
+      .catch((error) => {
         setLoader(false);
-        setResponseData(response.data);
-        await AsyncStorage.setItem(
-          `user${response.data._id}`,
-          JSON.stringify(response.data)
+        Alert.alert(
+          "Error Logging in",
+          "An unexpected error occurred. Please check your internet connection and try again later.",
+          [
+            {
+              text: "Cancel",
+              onPress: () => {},
+            },
+          ]
         );
-        await AsyncStorage.setItem("id", JSON.stringify(response.data?._id));
-        navigation.replace("Bottom Navigation");
-      } else {
-        Alert.alert("Error Logging in", "Please provide valid credentials", [
-          {
-            text: "Cancel",
-            onPress: () => {},
-          },
-          { defaultIndex: 1 },
-        ]);
-      }
-    } catch (error) {
-      Alert.alert("Error", "Oops, Error logging in try again", [
-        {
-          text: "Cancel",
-          onPress: () => {},
-        },
-      ]);
-    } finally {
-      setLoader(false);
-    }
+      });
   };
   return (
     <ScrollView>

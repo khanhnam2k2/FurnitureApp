@@ -1,61 +1,45 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  ActivityIndicator,
-} from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { COLORS, SIZES } from "../constants";
+import { COLORS } from "../constants";
 import { ProductInCart } from "../components";
-import { API_URL } from "../config";
-import { checkUserLogin } from "../utils";
-import axios from "axios";
 import MasonryList from "@react-native-seoul/masonry-list";
 import { useFocusEffect } from "@react-navigation/native";
 import LottieView from "lottie-react-native";
+import { AuthContext } from "../context/AuthContext";
+import GlobalApi from "../GlobalApi";
 
 export default function CartScreen({ navigation }) {
-  const [userData, setUserData] = useState(null);
-  const [userLogin, setUserLogin] = useState(false);
+  const { user, isLogined, setCartItemCount } = useContext(AuthContext);
+
   const [isLoading, setIsLoading] = useState(false);
   const [cartData, setCartData] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
-    checkUserLogin(setUserData, setUserLogin);
-  }, []);
-
+    if (isLogined) {
+      getCartList();
+    }
+  }, [user]);
   useFocusEffect(
     useCallback(() => {
-      checkUserLogin(setUserData, setUserLogin);
-      if (userData) {
+      if (isLogined) {
         getCartList();
       }
     }, [])
   );
-  useEffect(() => {
-    if (userData) {
-      getCartList();
-    }
-  }, [userData]);
-  const getCartList = async () => {
+  const getCartList = () => {
     setIsLoading(true);
-    try {
-      const endpoint = `${API_URL}/api/cart/find/${userData?._id}`;
-      const response = await axios.get(endpoint);
-      if (response.status === 200) {
-        setCartData(response?.data[0]);
-        calculateTotalPrice(response.data[0]?.products);
+    GlobalApi.getCartList(user?._id).then((resp) => {
+      if (resp.status === 200) {
+        calculateTotalPrice(resp.data[0]?.products);
+        setCartData(resp?.data[0]?.products);
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
+
   const calculateTotalPrice = (items) => {
     let total = 0;
     items?.forEach((item) => {
@@ -63,20 +47,13 @@ export default function CartScreen({ navigation }) {
     });
     setTotalPrice(total);
   };
+
   const deleteCartItem = (cartItemId) => {
-    handleDeleteCartItem(cartItemId);
+    GlobalApi.deteleCartItem(cartItemId).then((resp) => {
+      getCartList();
+    });
   };
-  const handleDeleteCartItem = async (cartItemId) => {
-    try {
-      const response = await axios.delete(`${API_URL}/api/cart/${cartItemId}`);
-      if (response.status === 200) {
-        console.log(4);
-        getCartList();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   return (
     <SafeAreaView className="mx-4 flex-1">
       <View className="flex-row w-full justify-start items-center  rounded-full p-1 mt-4 mb-14">
@@ -95,9 +72,7 @@ export default function CartScreen({ navigation }) {
             autoPlay
             loop
           />
-        ) : !cartData ||
-          !cartData.products ||
-          cartData.products.length === 0 ? (
+        ) : !cartData || cartData?.length === 0 ? (
           <View className="flex items-center justify-center mt-10">
             <LottieView
               style={{ width: "100%", height: 150, marginBottom: 10 }}
@@ -122,7 +97,7 @@ export default function CartScreen({ navigation }) {
               contentContainerStyle={{
                 paddingBottom: 20,
               }}
-              data={cartData.products}
+              data={cartData}
               numColumns={1}
               keyExtractor={(item) => item._id}
               showsVerticalScrollIndicator={false}
