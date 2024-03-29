@@ -18,7 +18,7 @@ import {
 } from "./screens";
 import { AuthContext } from "./context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 const Stack = createNativeStackNavigator();
 export default function App() {
   const [user, setUser] = useState(null);
@@ -57,6 +57,32 @@ export default function App() {
   if (!fontsLoaded) {
     return null;
   }
+  const toastConfig = {
+    success: (props) => (
+      <BaseToast
+        {...props}
+        style={{ borderLeftColor: "pink" }}
+        contentContainerStyle={{ paddingHorizontal: 15 }}
+        text1Style={{
+          fontSize: 15,
+          fontWeight: "400",
+        }}
+      />
+    ),
+
+    error: (props) => (
+      <ErrorToast
+        {...props}
+        text1Style={{
+          fontSize: 17,
+        }}
+        text2Style={{
+          fontSize: 15,
+        }}
+      />
+    ),
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -149,6 +175,7 @@ export default function App() {
           />
         </Stack.Navigator>
       </NavigationContainer>
+      <Toast />
     </AuthContext.Provider>
   );
 }

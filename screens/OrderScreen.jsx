@@ -3,11 +3,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from "../constants";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
-import { API_URL } from "../config";
 import LottieView from "lottie-react-native";
 import MasonryList from "@react-native-seoul/masonry-list";
-import { OrderCardView } from "../components";
+import { Loading, OrderCardView } from "../components";
 import { AuthContext } from "../context/AuthContext";
 import GlobalApi from "../GlobalApi";
 
@@ -40,12 +38,7 @@ export default function OrderScreen({ navigation }) {
         </Text>
       </View>
       {isLoading ? (
-        <LottieView
-          style={{ width: "100%", height: 150 }}
-          source={require("../assets/images/loading.json")}
-          autoPlay
-          loop
-        />
+        <Loading />
       ) : userOrders?.length > 0 ? (
         <View className="flex-1">
           <Text className="font-bold text-lg mb-4">Thông tin đặt hàng</Text>

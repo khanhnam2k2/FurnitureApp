@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../context/AuthContext";
 import GlobalApi from "../../GlobalApi";
+import Toast from "react-native-toast-message";
 export default function ProductCardView({ item }) {
   const { user, isLogined, setCartItemCount } = useContext(AuthContext);
   const navigation = useNavigation();
@@ -32,7 +33,11 @@ export default function ProductCardView({ item }) {
       GlobalApi.addToCart(data).then((resp) => {
         if (resp.status === 200) {
           getCartItemCount();
-          Alert.alert("Awesome!", "Successfully added");
+          Toast.show({
+            type: "success",
+            text1: "Thành công",
+            text2: "Sản phẩm đươc thêm vào giỏ hàng thành công!",
+          });
         }
       });
     } else {

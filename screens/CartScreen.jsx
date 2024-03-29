@@ -3,7 +3,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants";
-import { ProductInCart } from "../components";
+import { Loading, ProductInCart } from "../components";
 import MasonryList from "@react-native-seoul/masonry-list";
 import { useFocusEffect } from "@react-navigation/native";
 import LottieView from "lottie-react-native";
@@ -26,6 +26,8 @@ export default function CartScreen({ navigation }) {
     useCallback(() => {
       if (isLogined) {
         getCartList();
+      } else {
+        navigation.navigate("Login");
       }
     }, [])
   );
@@ -66,12 +68,7 @@ export default function CartScreen({ navigation }) {
       </View>
       <View className="space-y-6 flex-1">
         {isLoading ? (
-          <LottieView
-            style={{ width: "100%", height: 150 }}
-            source={require("../assets/images/loading.json")}
-            autoPlay
-            loop
-          />
+          <Loading />
         ) : !cartData || cartData?.length === 0 ? (
           <View className="flex items-center justify-center mt-10">
             <LottieView
@@ -105,6 +102,7 @@ export default function CartScreen({ navigation }) {
                 <ProductInCart
                   item={item}
                   onDeleteCartItem={() => deleteCartItem(item._id)}
+                  getCartList={() => getCartList()}
                 />
               )}
             />

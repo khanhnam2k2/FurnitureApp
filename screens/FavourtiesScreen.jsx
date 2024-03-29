@@ -1,11 +1,9 @@
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ProductItemView } from "../components";
+import { Loading, ProductItemView } from "../components";
 import { COLORS } from "../constants";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
-import { API_URL } from "../config";
 import LottieView from "lottie-react-native";
 import GlobalApi from "../GlobalApi";
 import { AuthContext } from "../context/AuthContext";
@@ -51,12 +49,7 @@ export default function FavourtiesScreen({ navigation }) {
       </View>
       <View>
         {isLoading ? (
-          <LottieView
-            style={{ width: "100%", height: 150 }}
-            source={require("../assets/images/loading.json")}
-            autoPlay
-            loop
-          />
+          <Loading />
         ) : favouriteProducts?.length === 0 ? (
           <View className="flex items-center justify-center mt-10">
             <LottieView

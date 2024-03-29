@@ -23,6 +23,8 @@ const checkout = (data) => axiosClient.post("/api/orders", data);
 const getFavoriteProducts = (userId) =>
   axiosClient.get("/api/user/" + userId + "/favorites");
 const getUserOrders = (userId) => axiosClient.get("/api/orders/" + userId);
+const updateQuantityCart = (data) =>
+  axiosClient.put("/api/cart/updateQuantity", data);
 export default {
   login,
   getCartItemCount,
@@ -35,4 +37,5 @@ export default {
   checkout,
   getFavoriteProducts,
   getUserOrders,
+  updateQuantityCart,
 };
