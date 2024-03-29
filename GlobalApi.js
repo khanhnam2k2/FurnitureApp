@@ -7,6 +7,7 @@ const axiosClient = axios.create({
 });
 
 const login = (data) => axiosClient.post("/api/login", data);
+const getProductList = () => axiosClient.get("/api/products");
 const getCartItemCount = (userId) =>
   axiosClient.get("/api/cart/" + userId + "/cartItemCount");
 const addToCart = (data) => axiosClient.post("/api/cart/addToCart", data);
@@ -38,4 +39,5 @@ export default {
   getFavoriteProducts,
   getUserOrders,
   updateQuantityCart,
+  getProductList,
 };
