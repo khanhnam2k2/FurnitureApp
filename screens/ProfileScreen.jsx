@@ -6,7 +6,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { COLORS, SIZES } from "../constants";
 import {
   AntDesign,
@@ -15,8 +15,13 @@ import {
 } from "@expo/vector-icons";
 import { AuthContext } from "../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from "expo-image-picker";
+import GlobalApi from "../GlobalApi";
+import Toast from "react-native-toast-message";
+
 export default function ProfileScreen({ navigation }) {
   const { user, setUser, isLogined, setIsLogined } = useContext(AuthContext);
+  const [avatar, setAvatar] = useState(user?.avatar);
 
   const userLogout = async () => {
     try {
@@ -43,24 +48,6 @@ export default function ProfileScreen({ navigation }) {
     ]);
   };
 
-  const clearCache = () => {
-    Alert.alert(
-      "Clear Cache",
-      "Are you sure you want delete all saved data on your device ",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("cancel"),
-        },
-        {
-          text: "Continue",
-          onPress: () => console.log("clear cache "),
-        },
-        { defaultIndex: 1 },
-      ]
-    );
-  };
-
   const deleteAccount = () => {
     Alert.alert("Delete Account", "Are you sure you want delete Account ", [
       {
@@ -74,6 +61,43 @@ export default function ProfileScreen({ navigation }) {
       { defaultIndex: 1 },
     ]);
   };
+
+  const updateAvatarUser = (avatarUri) => {
+    const data = {
+      avatar: avatarUri,
+    };
+    GlobalApi.updateProfileUser(user?._id, data).then((resp) => {
+      if (resp.status === 200) {
+        Toast.show({
+          type: "success",
+          text1: "Thành công",
+          text2: "Cập nhật avatar thành công",
+        });
+      }
+    });
+  };
+  const openImagePicker = async () => {
+    let permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("Permission to access camera roll is required!");
+      return;
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const newAvatarUri = result.assets[0].uri;
+      setAvatar(newAvatarUri);
+      updateAvatarUser(newAvatarUri);
+    }
+  };
+
   return (
     <ScrollView
       style={{
@@ -96,10 +120,20 @@ export default function ProfileScreen({ navigation }) {
         {/* Profile info */}
         <View>
           <View className="flex items-center">
-            <Image
-              source={require("../assets/images/profile.jpeg")}
-              className="w-36 h-36 rounded-full -mt-20 border-4"
-            />
+            {/* ảnh đại diện */}
+            <TouchableOpacity onPress={openImagePicker}>
+              {avatar ? (
+                <Image
+                  source={{ uri: avatar }}
+                  className="w-36 h-36 rounded-full -mt-20 border-4"
+                />
+              ) : (
+                <Image
+                  source={require("../assets/images/profile.jpeg")}
+                  className="w-36 h-36 rounded-full -mt-20 border-4"
+                />
+              )}
+            </TouchableOpacity>
             <Text
               className="mt-2 text-base font-bold mb-2"
               style={{ color: COLORS.primary }}
