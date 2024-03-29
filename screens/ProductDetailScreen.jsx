@@ -55,18 +55,22 @@ export default function ProductDetailScreen() {
     });
   };
   const addToCart = () => {
-    setLoading(true);
-    const data = {
-      userId: user?._id,
-      cartItem: item?._id,
-      quantity: count,
-    };
-    GlobalApi.addToCart(data).then((resp) => {
-      if (resp.status === 200) {
-        navigation.navigate("Cart");
-      }
-      setLoading(false);
-    });
+    if (isLogined) {
+      setLoading(true);
+      const data = {
+        userId: user?._id,
+        cartItem: item?._id,
+        quantity: count,
+      };
+      GlobalApi.addToCart(data).then((resp) => {
+        if (resp.status === 200) {
+          navigation.navigate("Cart");
+        }
+        setLoading(false);
+      });
+    } else {
+      navigation.navigate("Login");
+    }
   };
 
   const increment = () => {
@@ -199,10 +203,12 @@ export default function ProductDetailScreen() {
         >
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate("Checkout", {
-                item,
-                count,
-              })
+              isLogined
+                ? navigation.navigate("Checkout", {
+                    item,
+                    count,
+                  })
+                : navigation.navigate("Login")
             }
             className="flex-1 p-2 rounded-full"
             style={{ backgroundColor: COLORS.black }}

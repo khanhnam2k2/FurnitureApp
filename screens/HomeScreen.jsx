@@ -43,7 +43,7 @@ export default function HomeScreen() {
         <View className="flex-row justify-between items-center">
           <Ionicons name="location-outline" size={24} />
           <Text style={styles.locationText}>
-            {user ? user.username : "Shaege China"}
+            {user ? "Hello, " + user.username : ""}
           </Text>
           <View style={{ alignItems: "flex-end" }}>
             {isLogined ? (

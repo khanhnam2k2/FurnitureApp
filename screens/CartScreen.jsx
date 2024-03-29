@@ -27,7 +27,7 @@ export default function CartScreen({ navigation }) {
       if (isLogined) {
         getCartList();
       } else {
-        navigation.navigate("Login");
+        setCartData([]);
       }
     }, [])
   );
@@ -67,7 +67,26 @@ export default function CartScreen({ navigation }) {
         </Text>
       </View>
       <View className="space-y-6 flex-1">
-        {isLoading ? (
+        {!isLogined ? (
+          <View className="flex items-center justify-center mt-10">
+            <LottieView
+              style={{ width: "100%", height: 150, marginBottom: 10 }}
+              source={require("../assets/images/sad.json")}
+              autoPlay
+              loop
+            />
+            <Text>Vui lòng đăng nhập để tiếp tục mua sắm!</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Login")}
+              className="mt-4 py-2 px-4 rounded-full "
+              style={{ backgroundColor: COLORS.primary }}
+            >
+              <Text className="text-white text-base font-bold">
+                Đăng nhập ngay
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : isLoading ? (
           <Loading />
         ) : !cartData || cartData?.length === 0 ? (
           <View className="flex items-center justify-center mt-10">
