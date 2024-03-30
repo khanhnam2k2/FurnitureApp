@@ -168,16 +168,16 @@ export default function ProfileScreen({ navigation }) {
               <View></View>
             ) : (
               <View
-                className="mt-4 rounded-lg"
+                className="mt-6 rounded-lg border"
                 style={{
-                  backgroundColor: COLORS.lightWhite,
+                  backgroundColor: COLORS.white,
                   width: SIZES.width - SIZES.large,
                 }}
               >
                 <TouchableOpacity
                   onPress={() => navigation.navigate("Favourties")}
                 >
-                  <View className="flex-row border-b-2 border-gray-200 px-7 py-3 gap-4 items-center">
+                  <View className="flex-row border-b-2 border-gray-200 px-4 py-3 gap-4 items-center mx-1">
                     <MaterialCommunityIcons
                       name="heart-outline"
                       size={24}
@@ -192,7 +192,7 @@ export default function ProfileScreen({ navigation }) {
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate("Orders")}>
-                  <View className="flex-row border-b-2 border-gray-200 px-7 py-3 gap-4 items-center">
+                  <View className="flex-row border-b-2 border-gray-200 px-4  py-3 gap-4 items-center mx-1">
                     <MaterialCommunityIcons
                       name="truck-delivery-outline"
                       size={24}
@@ -207,7 +207,7 @@ export default function ProfileScreen({ navigation }) {
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
-                  <View className="flex-row border-b-2 border-gray-200 px-7 py-3 gap-4 items-center">
+                  <View className="flex-row border-b-2 border-gray-200 px-4  py-3 gap-4 items-center mx-1">
                     <SimpleLineIcons
                       name="bag"
                       size={24}
@@ -221,23 +221,8 @@ export default function ProfileScreen({ navigation }) {
                     </Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => deleteAccount()}>
-                  <View className="flex-row  border-b-2 border-gray-200 px-7 py-3 gap-4 items-center">
-                    <AntDesign
-                      name="deleteuser"
-                      size={24}
-                      color={COLORS.primary}
-                    />
-                    <Text
-                      className="text-base font-bold"
-                      style={{ color: COLORS.primary }}
-                    >
-                      Delete account
-                    </Text>
-                  </View>
-                </TouchableOpacity>
                 <TouchableOpacity onPress={() => logout()}>
-                  <View className="flex-row  px-7 py-3 gap-4 items-center">
+                  <View className="flex-row  px-4 py-3 gap-4 items-center  mx-1">
                     <AntDesign name="logout" size={24} color={COLORS.primary} />
                     <Text
                       className="text-base font-bold"

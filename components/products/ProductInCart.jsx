@@ -46,10 +46,7 @@ export default function ProductInCart({ item, onDeleteCartItem, getCartList }) {
     >
       <View className="flex-1 flex-row items-center justify-between">
         <View className="flex-1 flex-row">
-          <View
-            className="w-16 justify-center items-center rounded-lg"
-            style={{ backgroundColor: COLORS.secondary }}
-          >
+          <View className="w-16 justify-center items-center rounded-lg">
             <Image
               source={{ uri: item?.cartItem?.imageUrl }}
               className="w-full h-16 rounded-lg "
@@ -73,19 +70,31 @@ export default function ProductInCart({ item, onDeleteCartItem, getCartList }) {
           </View>
         </View>
         <View>
-          <View className="flex-row gap-4">
-            <TouchableOpacity
-              disabled={quantity == 1}
-              onPress={() => decrementQuantity()}
-              style={{ opacity: quantity == 1 ? 0.2 : 1 }}
-            >
-              <SimpleLineIcons name="minus" size={20} />
-            </TouchableOpacity>
-            <Text className="font-bold text-sm">{quantity}</Text>
-            <TouchableOpacity onPress={() => incrementQuantity()}>
-              <SimpleLineIcons name="plus" size={20} />
-            </TouchableOpacity>
-          </View>
+          {getCartList ? (
+            <View className="flex-row gap-4">
+              <TouchableOpacity
+                disabled={quantity == 1}
+                onPress={() => decrementQuantity()}
+                style={{ opacity: quantity == 1 ? 0.2 : 1 }}
+              >
+                <SimpleLineIcons name="minus" size={20} />
+              </TouchableOpacity>
+              <Text className="font-bold text-sm">{quantity}</Text>
+              <TouchableOpacity onPress={() => incrementQuantity()}>
+                <SimpleLineIcons name="plus" size={20} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View className="flex-row items-center gap-1">
+              <Text className="font-bold text-sm text-gray-400">Số lượng:</Text>
+              <Text
+                className="font-bold text-base"
+                style={{ color: COLORS.primary }}
+              >
+                {quantity}
+              </Text>
+            </View>
+          )}
         </View>
       </View>
       <View className="flex flex-row gap-2 justify-end">

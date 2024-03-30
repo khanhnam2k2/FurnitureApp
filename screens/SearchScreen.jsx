@@ -13,6 +13,7 @@ import axios from "axios";
 import { API_URL } from "../config";
 import { Loading, ProductItemView } from "../components";
 import LottieView from "lottie-react-native";
+import GlobalApi from "../GlobalApi";
 export default function SearchScreen() {
   const [searchKey, setSearchKey] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -26,18 +27,12 @@ export default function SearchScreen() {
   const searchProducts = async () => {
     if (searchKey) {
       setIsLoading(true);
-      try {
-        const response = await axios.get(
-          `${API_URL}/api/products/search/${searchKey}`
-        );
-        if (response && response.data) {
-          setSearchResults(response.data);
+      GlobalApi.searchProduct(searchKey).then((resp) => {
+        if (resp.status === 200) {
+          setSearchResults(resp?.data);
         }
-      } catch (error) {
-        console.log("Failed to search");
-      } finally {
         setIsLoading(false);
-      }
+      });
     }
   };
   return (

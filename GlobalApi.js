@@ -9,6 +9,8 @@ const axiosClient = axios.create({
 const login = (data) => axiosClient.post("/api/login", data);
 const getCategoryList = () => axiosClient.get("/api/category");
 const getProductList = () => axiosClient.get("/api/products");
+const searchProduct = (searchKey) =>
+  axiosClient.get("/api/products/search/" + searchKey);
 const getProductByCategory = (categoryId) =>
   axiosClient.get("/api/products/category/" + categoryId);
 const getCartItemCount = (userId) =>
@@ -48,4 +50,5 @@ export default {
   updateProfileUser,
   getCategoryList,
   getProductByCategory,
+  searchProduct,
 };
