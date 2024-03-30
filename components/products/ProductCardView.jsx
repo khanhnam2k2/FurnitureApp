@@ -50,7 +50,7 @@ export default function ProductCardView({ item }) {
       onPress={() => navigation.navigate("ProductDetail", { item })}
     >
       <View
-        className="w-44 h-60 rounded-lg p-2 mx-2"
+        className="w-44 h-60 rounded-lg p-2 mx-2 mb-4"
         style={{ backgroundColor: COLORS.secondary }}
       >
         <View className="w-full rounded-md overflow-hidden">

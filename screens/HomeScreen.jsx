@@ -21,6 +21,8 @@ import GlobalApi from "../GlobalApi";
 export default function HomeScreen() {
   const { user, isLogined, cartItemCount, setCartItemCount } =
     useContext(AuthContext);
+  const [productList, setProductList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
   const getCartItemCount = () => {
     GlobalApi.getCartItemCount(user?._id).then((resp) => {
@@ -29,6 +31,7 @@ export default function HomeScreen() {
   };
   useEffect(() => {
     getCartItemCount(user?._id);
+    getProductList();
   }, []);
 
   useFocusEffect(
@@ -36,6 +39,16 @@ export default function HomeScreen() {
       getCartItemCount();
     }, [user?._id])
   );
+
+  const getProductList = () => {
+    setIsLoading(true);
+    GlobalApi.getProductList().then((resp) => {
+      if (resp.status === 200) {
+        setProductList(resp?.data);
+      }
+      setIsLoading(false);
+    });
+  };
   return (
     <SafeAreaView className="flex-1 mx-4">
       <StatusBar style="auto" />
@@ -76,7 +89,7 @@ export default function HomeScreen() {
         <Welcome />
         <Carousel />
         <Headings />
-        <ProductRow />
+        <ProductRow productList={productList} isLoading={isLoading} />
       </ScrollView>
     </SafeAreaView>
   );

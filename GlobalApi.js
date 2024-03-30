@@ -7,7 +7,10 @@ const axiosClient = axios.create({
 });
 
 const login = (data) => axiosClient.post("/api/login", data);
+const getCategoryList = () => axiosClient.get("/api/category");
 const getProductList = () => axiosClient.get("/api/products");
+const getProductByCategory = (categoryId) =>
+  axiosClient.get("/api/products/category/" + categoryId);
 const getCartItemCount = (userId) =>
   axiosClient.get("/api/cart/" + userId + "/cartItemCount");
 const addToCart = (data) => axiosClient.post("/api/cart/addToCart", data);
@@ -43,4 +46,6 @@ export default {
   updateQuantityCart,
   getProductList,
   updateProfileUser,
+  getCategoryList,
+  getProductByCategory,
 };

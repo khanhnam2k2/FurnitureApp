@@ -1,27 +1,13 @@
-import { View, FlatList } from "react-native";
-import React, { useEffect, useState } from "react";
+import { View } from "react-native";
+import React from "react";
 import ProductCardView from "./ProductCardView";
 import Loading from "../common/Loading";
 import LottieView from "lottie-react-native";
-import GlobalApi from "../../GlobalApi";
+import MasonryList from "@react-native-seoul/masonry-list";
 
-export default function ProductList() {
-  const [productList, setProductList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {
-    getProductList();
-  }, []);
-  const getProductList = () => {
-    setIsLoading(true);
-    GlobalApi.getProductList().then((resp) => {
-      if (resp.status === 200) {
-        setProductList(resp?.data);
-      }
-      setIsLoading(false);
-    });
-  };
+export default function ProductList({ productList, isLoading }) {
   return (
-    <View>
+    <View className="flex-1">
       {isLoading ? (
         <View className="flex-1 justify-center items-center content-center mt-16">
           <Loading />
@@ -34,12 +20,17 @@ export default function ProductList() {
           loop
         />
       ) : (
-        <FlatList
-          data={productList}
-          numColumns={2}
-          renderItem={({ item }) => <ProductCardView item={item} />}
-          ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
-        />
+        <View className="flex-1">
+          <MasonryList
+            data={productList}
+            keyExtractor={(item) => item?._id}
+            numColumns={2}
+            renderItem={({ item, i }) => (
+              <ProductCardView item={item} index={i} />
+            )}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
       )}
     </View>
   );

@@ -7,6 +7,7 @@ import ProductItemView from "./products/ProductItemView";
 import ProductInCart from "./products/ProductInCart";
 import OrderCardView from "./orders/OrderCardView";
 import Loading from "./common/Loading";
+import CategoryList from "./category/CategoryList";
 export {
   Welcome,
   ProductCardView,
@@ -17,4 +18,5 @@ export {
   ProductInCart,
   OrderCardView,
   Loading,
+  CategoryList,
 };
