@@ -14,50 +14,53 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Button } from "../components";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
-import { API_URL } from "../config";
+import GlobalApi from "../GlobalApi";
+import Toast from "react-native-toast-message";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .required("Required"),
-  email: Yup.string().email("Invalid email address").required("Required"),
+    .min(8, "Mật khẩu cần dài ít nhất 8 ký tự")
+    .required("Mật khẩu là bắt buộc"),
+  email: Yup.string().email("Email không hợp lệ").required("Email là bắt buộc"),
   location: Yup.string()
-    .min(3, "Location must be at least 3 characters")
-    .required("Required"),
+    .min(3, "Địa chỉ cần dài ít nhất 8 ký tự")
+    .required("Địa chỉ là bắt buộc"),
   username: Yup.string()
-    .min(3, "User name must be at least 3 characters")
-    .required("Required"),
+    .min(3, "Tên cần dài ít nhất 8 ký tự")
+    .required("Tên là bắt buộc"),
 });
 
 export default function SignUpScreen({ navigation }) {
   const [loader, setLoader] = useState(false);
   const [obsecureText, setObsecureText] = useState(true);
+
+  // Hàm xử lý form lỗi
   const inValidForm = () => {
-    Alert.alert("Invalid Form", "Please provide all required fields", [
+    Alert.alert("Lỗi", "Vui lòng cung cấp tất cả các trường bắt buộc", [
       {
-        text: "Cancel",
+        text: "Đồng ý",
         onPress: () => {},
       },
-      { defaultIndex: 1 },
     ]);
   };
-  const registerUser = async (values) => {
-    setLoader(true);
-    try {
-      const endpoint = `${API_URL}/api/register`;
-      const data = values;
 
-      const response = await axios.post(endpoint, data);
-      if (response.status === 201) {
+  // Hàm đăng ký tài khoản
+  const registerUser = (values) => {
+    setLoader(true);
+    const data = values;
+    GlobalApi.register(data).then((resp) => {
+      if (resp.status === 201) {
+        Toast.show({
+          type: "success",
+          text1: "Thành công",
+          text2: "Đăng ký thành công!",
+        });
         navigation.replace("Login");
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
       setLoader(false);
-    }
+    });
   };
+
   return (
     <ScrollView>
       <SafeAreaView className="mx-5">
@@ -82,10 +85,10 @@ export default function SignUpScreen({ navigation }) {
             }}
           />
           <Text
-            className="text-center font-extrabold mb-4 text-xl"
+            className="text-center font-extrabold mb-4 text-2xl"
             style={{ color: COLORS.primary }}
           >
-            Unlimited Luxurious Furniture
+            Nội thất sang trọng
           </Text>
           <Formik
             initialValues={{
@@ -99,7 +102,6 @@ export default function SignUpScreen({ navigation }) {
           >
             {({
               handleChange,
-              handleBlur,
               handleSubmit,
               touched,
               values,
@@ -110,7 +112,7 @@ export default function SignUpScreen({ navigation }) {
               <View>
                 <View className="mb-5 mx-5">
                   <Text className="mb-1 me-1 text-right text-sm">
-                    User name
+                    Tên của bạn
                   </Text>
                   <View
                     className="border h-12 flex-row rounded-lg px-3 items-center "
@@ -128,7 +130,7 @@ export default function SignUpScreen({ navigation }) {
                     />
                     <TextInput
                       className="ml-2 flex-1"
-                      placeholder="Username"
+                      placeholder="Nhập tên"
                       onFocus={() => {
                         setFieldTouched("username");
                       }}
@@ -164,7 +166,7 @@ export default function SignUpScreen({ navigation }) {
                     />
                     <TextInput
                       className="ml-2 flex-1"
-                      placeholder="Enter email"
+                      placeholder="example@gmail.com"
                       onFocus={() => {
                         setFieldTouched("email");
                       }}
@@ -184,7 +186,7 @@ export default function SignUpScreen({ navigation }) {
                   )}
                 </View>
                 <View className="mb-5 mx-5">
-                  <Text className="mb-1 me-1 text-right text-sm">Password</Text>
+                  <Text className="mb-1 me-1 text-right text-sm">Mật khẩu</Text>
                   <View
                     className="border h-12 flex-row rounded-lg px-3 items-center "
                     style={{
@@ -202,7 +204,7 @@ export default function SignUpScreen({ navigation }) {
                     <TextInput
                       className="ml-2 flex-1"
                       secureTextEntry={obsecureText}
-                      placeholder="Password"
+                      placeholder="Mật khẩu"
                       onFocus={() => {
                         setFieldTouched("password");
                       }}
@@ -230,7 +232,7 @@ export default function SignUpScreen({ navigation }) {
                   )}
                 </View>
                 <View className="mb-5 mx-5">
-                  <Text className="mb-1 me-1 text-right text-sm">Location</Text>
+                  <Text className="mb-1 me-1 text-right text-sm">Vị trí</Text>
                   <View
                     className="border h-12 flex-row rounded-lg px-3 items-center "
                     style={{
@@ -247,7 +249,7 @@ export default function SignUpScreen({ navigation }) {
                     />
                     <TextInput
                       className="ml-2 flex-1"
-                      placeholder="Enter location"
+                      placeholder="Nhập vị trí"
                       onFocus={() => {
                         setFieldTouched("location");
                       }}
@@ -267,18 +269,18 @@ export default function SignUpScreen({ navigation }) {
                 </View>
                 <Button
                   onPress={isValid ? handleSubmit : () => inValidForm()}
-                  title={"S I G N U P"}
+                  title={"ĐĂNG KÝ"}
                   isValid={isValid}
                   loader={loader}
                 />
                 <View className="flex-row mt-2 items-center justify-center">
-                  <Text>Have a account?</Text>
+                  <Text>Bạn đã có tài khoản?</Text>
                   <Text
                     className="text-center ml-1 font-bold"
                     style={{ color: COLORS.primary }}
                     onPress={() => navigation.navigate("Login")}
                   >
-                    Login{" "}
+                    Đăng nhập ngay
                   </Text>
                 </View>
               </View>

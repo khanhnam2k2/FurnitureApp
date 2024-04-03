@@ -1,10 +1,11 @@
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import React from "react";
 import { COLORS, SIZES } from "../../constants";
 
 export default function Button({ title, onPress, isValid, loader }) {
   return (
     <TouchableOpacity
+      disabled={!isValid}
       onPress={onPress}
       className="h-12 my-5 w-full justify-center items-center rounded-full "
       style={{

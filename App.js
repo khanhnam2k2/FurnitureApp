@@ -19,7 +19,9 @@ import {
 import { AuthContext } from "./context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+
 const Stack = createNativeStackNavigator();
+
 export default function App() {
   const [user, setUser] = useState(null);
   const [isLogined, setIsLogined] = useState(false);

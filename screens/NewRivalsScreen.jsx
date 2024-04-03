@@ -8,10 +8,10 @@ import GlobalApi from "../GlobalApi";
 
 export default function NewRivalsScreen({ navigation }) {
   const [activeCategory, setActiveCategory] = useState();
-
   const [categoryList, setCategoryList] = useState([]);
   const [productList, setProductList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     getCategoryList();
     if (!activeCategory) {
@@ -20,6 +20,8 @@ export default function NewRivalsScreen({ navigation }) {
       getProductByCategory();
     }
   }, []);
+
+  // Hàm lấy danh sách danh mục sp
   const getCategoryList = () => {
     GlobalApi.getCategoryList().then((resp) => {
       if (resp.status === 200) {
@@ -27,6 +29,8 @@ export default function NewRivalsScreen({ navigation }) {
       }
     });
   };
+
+  // Hàm lấy danh sách sản phẩm
   const getProductList = () => {
     setIsLoading(true);
     GlobalApi.getProductList().then((resp) => {
@@ -36,6 +40,8 @@ export default function NewRivalsScreen({ navigation }) {
       setIsLoading(false);
     });
   };
+
+  // Hàm lấy danh sách sản phẩm theo danh mục
   const getProductByCategory = (categoryId) => {
     setIsLoading(true);
     GlobalApi.getProductByCategory(categoryId).then((resp) => {
@@ -45,10 +51,13 @@ export default function NewRivalsScreen({ navigation }) {
       setIsLoading(false);
     });
   };
+
+  // Hàm thay đổi danh mục hiện tại
   const handChangeCategory = (categoryId) => {
     getProductByCategory(categoryId);
     setActiveCategory(categoryId);
   };
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1 mx-4">
@@ -68,7 +77,7 @@ export default function NewRivalsScreen({ navigation }) {
               className=" text-white ml-2 text-lg"
               style={{ fontFamily: "semibold" }}
             >
-              Products
+              Danh sách sản phẩm
             </Text>
           </View>
           <View className="flex-row items-center">
@@ -77,7 +86,7 @@ export default function NewRivalsScreen({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
-        {/* Category List */}
+        {/* Danh sách danh mục */}
         <View className="mt-10">
           <CategoryList
             categories={categoryList}
@@ -85,7 +94,8 @@ export default function NewRivalsScreen({ navigation }) {
             handChangeCategory={handChangeCategory}
           />
         </View>
-        {/* Product List */}
+
+        {/* Danh sách sản phẩm */}
         <View className="flex-1 mt-5">
           <ProductList productList={productList} isLoading={isLoading} />
         </View>

@@ -9,8 +9,6 @@ import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants";
-import axios from "axios";
-import { API_URL } from "../config";
 import { Loading, ProductItemView } from "../components";
 import LottieView from "lottie-react-native";
 import GlobalApi from "../GlobalApi";
@@ -19,11 +17,15 @@ export default function SearchScreen() {
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSearched, setIsSearched] = useState(false);
+
+  // Hàm xử lý tìm kiếm sản phẩm
   const handlePressSearch = () => {
     setIsSearched(true);
     searchProducts();
     setSearchResults([]);
   };
+
+  // Hàm tìm kiếm sản phẩm
   const searchProducts = async () => {
     if (searchKey) {
       setIsLoading(true);
@@ -37,7 +39,7 @@ export default function SearchScreen() {
   };
   return (
     <SafeAreaView className="flex-1 m-4">
-      {/* Search Bar */}
+      {/* Thanh tìm kiếm */}
       <View
         className="flex-row justify-center items-center my-2 h-16 rounded-full p-2 mb-10"
         style={{ backgroundColor: COLORS.secondary }}
@@ -53,7 +55,7 @@ export default function SearchScreen() {
             className="w-full h-full px-2"
             value={searchKey}
             onChangeText={(text) => setSearchKey(text)}
-            placeholder="What are you looking for"
+            placeholder="Bạn đang tìm kiếm gì"
           />
         </View>
         <View>

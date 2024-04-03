@@ -18,6 +18,8 @@ export default function ProductItemView({ item, onPressDelete }) {
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
+
+  // Hàm thêm sp vào giỏ hàng
   const addToCart = () => {
     setLoading(true);
     const data = {
@@ -28,7 +30,6 @@ export default function ProductItemView({ item, onPressDelete }) {
     if (isLogined) {
       GlobalApi.addToCart(data).then((resp) => {
         if (resp.status === 200) {
-          // setCartItemCount((prev) => prev + 1);
           navigation.navigate("Cart");
         }
       });

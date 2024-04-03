@@ -21,24 +21,27 @@ import GlobalApi from "../GlobalApi";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .required("Required"),
-  email: Yup.string().email("Invalid email address").required("Required"),
+    .min(8, "Mật khẩu cần dài ít nhất 8 ký tự")
+    .required("Mật khẩu là bắt buộc"),
+  email: Yup.string().email("Email không hợp lệ").required("Email là bắt buộc"),
 });
 
 export default function LoginScreen({ navigation }) {
-  const { user, setUser, isLogined, setIsLogined } = useContext(AuthContext);
+  const { setUser, setIsLogined } = useContext(AuthContext);
   const [loader, setLoader] = useState(false);
   const [obsecureText, setObsecureText] = useState(true);
+
+  // Hàm xử lý form lỗi
   const inValidForm = () => {
-    Alert.alert("Invalid Form", "Please provide all required fields", [
+    Alert.alert("Lỗi", "Vui lòng cung cấp tất cả các trường bắt buộc", [
       {
-        text: "Cancel",
+        text: "Đồng ý",
         onPress: () => {},
       },
-      { defaultIndex: 1 },
     ]);
   };
+
+  // Hàm đăng nhập
   const login = (values) => {
     setLoader(true);
     const data = values;
@@ -53,9 +56,9 @@ export default function LoginScreen({ navigation }) {
           setLoader(false);
         } else {
           setLoader(false);
-          Alert.alert("Error Logging in", resp?.data?.error, [
+          Alert.alert("Lỗi đăng nhập", resp?.data?.error, [
             {
-              text: "Cancel",
+              text: "Đồng ý",
               onPress: () => {},
             },
           ]);
@@ -64,11 +67,11 @@ export default function LoginScreen({ navigation }) {
       .catch((error) => {
         setLoader(false);
         Alert.alert(
-          "Error Logging in",
-          "An unexpected error occurred. Please check your internet connection and try again later.",
+          "Lỗi đăng nhập",
+          "Đã xảy ra lỗi không mong muốn. Vui lòng kiểm tra kết nối Internet của bạn và thử lại sau.",
           [
             {
-              text: "Cancel",
+              text: "Hủy bỏ",
               onPress: () => {},
             },
           ]
@@ -99,10 +102,10 @@ export default function LoginScreen({ navigation }) {
             }}
           />
           <Text
-            className="text-center font-extrabold mb-4 text-xl"
+            className="text-center font-extrabold mb-4 text-2xl"
             style={{ color: COLORS.primary }}
           >
-            Unlimited Luxurious Furniture
+            Nội thất sang trọng
           </Text>
           <Formik
             initialValues={{ email: "", password: "" }}
@@ -111,7 +114,6 @@ export default function LoginScreen({ navigation }) {
           >
             {({
               handleChange,
-              handleBlur,
               handleSubmit,
               touched,
               values,
@@ -138,7 +140,7 @@ export default function LoginScreen({ navigation }) {
                     />
                     <TextInput
                       className="ml-2 flex-1"
-                      placeholder="Enter email"
+                      placeholder="example@gmail.com"
                       onFocus={() => {
                         setFieldTouched("email");
                       }}
@@ -158,7 +160,7 @@ export default function LoginScreen({ navigation }) {
                   )}
                 </View>
                 <View className="mb-5 mx-5">
-                  <Text className="mb-1 me-1 text-right text-sm">Password</Text>
+                  <Text className="mb-1 me-1 text-right text-sm">Mật khẩu</Text>
                   <View
                     className="border h-12 flex-row rounded-lg px-3 items-center "
                     style={{
@@ -176,7 +178,7 @@ export default function LoginScreen({ navigation }) {
                     <TextInput
                       className="ml-2 flex-1"
                       secureTextEntry={obsecureText}
-                      placeholder="Password"
+                      placeholder="Mật khẩu"
                       onFocus={() => {
                         setFieldTouched("password");
                       }}
@@ -206,18 +208,18 @@ export default function LoginScreen({ navigation }) {
                 <Button
                   loader={loader}
                   onPress={isValid ? handleSubmit : () => inValidForm()}
-                  title={"L O G I N"}
+                  title={"ĐĂNG NHẬP"}
                   isValid={isValid}
                 />
 
                 <View className="flex-row mt-4 items-center justify-center">
-                  <Text>Don't have account?</Text>
+                  <Text>Bạn chưa có tài khoản?</Text>
                   <Text
                     className="text-center ml-1 font-bold"
                     style={{ color: COLORS.primary }}
                     onPress={() => navigation.navigate("SignUp")}
                   >
-                    Register
+                    Đăng ký ngay
                   </Text>
                 </View>
               </View>

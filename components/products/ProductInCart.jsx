@@ -9,14 +9,7 @@ import Toast from "react-native-toast-message";
 export default function ProductInCart({ item, onDeleteCartItem, getCartList }) {
   const [quantity, setQuantity] = useState(item?.quantity);
 
-  const incrementQuantity = () => {
-    setQuantity(quantity + 1);
-    const data = {
-      cartItemId: item?._id,
-      newQuantity: quantity + 1,
-    };
-    handleUpdateQuantity(data);
-  };
+  // Hàm cập nhật số lượng sp trong giỏ hàng
   const handleUpdateQuantity = (data) => {
     GlobalApi.updateQuantityCart(data).then((resp) => {
       Toast.show({
@@ -27,6 +20,18 @@ export default function ProductInCart({ item, onDeleteCartItem, getCartList }) {
       getCartList();
     });
   };
+
+  // Hàm tăng số lượng sp
+  const incrementQuantity = () => {
+    setQuantity(quantity + 1);
+    const data = {
+      cartItemId: item?._id,
+      newQuantity: quantity + 1,
+    };
+    handleUpdateQuantity(data);
+  };
+
+  //Hàm giảm số lượng sp
   const decrementQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);

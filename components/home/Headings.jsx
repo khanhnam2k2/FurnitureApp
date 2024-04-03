@@ -9,7 +9,7 @@ export default function Headings() {
     <View className="mt-4">
       <View className="flex-row justify-between items-center">
         <Text style={{ fontSize: SIZES.large }} className="font-bold">
-          New Rivals
+          Sản phẩm
         </Text>
         <TouchableOpacity onPress={() => navigation.navigate("ProductList")}>
           <Ionicons name="grid" size={24} color={COLORS.primary} />

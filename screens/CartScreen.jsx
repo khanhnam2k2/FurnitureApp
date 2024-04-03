@@ -11,7 +11,7 @@ import { AuthContext } from "../context/AuthContext";
 import GlobalApi from "../GlobalApi";
 
 export default function CartScreen({ navigation }) {
-  const { user, isLogined, setCartItemCount } = useContext(AuthContext);
+  const { user, isLogined } = useContext(AuthContext);
 
   const [isLoading, setIsLoading] = useState(false);
   const [cartData, setCartData] = useState([]);
@@ -22,6 +22,7 @@ export default function CartScreen({ navigation }) {
       getCartList();
     }
   }, [user]);
+
   useFocusEffect(
     useCallback(() => {
       if (isLogined) {
@@ -31,6 +32,8 @@ export default function CartScreen({ navigation }) {
       }
     }, [])
   );
+
+  // Hàm lấy danh sách sản phẩm trong giỏ hàng
   const getCartList = () => {
     setIsLoading(true);
     GlobalApi.getCartList(user?._id).then((resp) => {
@@ -42,6 +45,7 @@ export default function CartScreen({ navigation }) {
     });
   };
 
+  // Hàm tính tổng tiền
   const calculateTotalPrice = (items) => {
     let total = 0;
     items?.forEach((item) => {
@@ -50,6 +54,7 @@ export default function CartScreen({ navigation }) {
     setTotalPrice(total);
   };
 
+  // Hàm xóa sản phẩm trong giỏ hàng
   const deleteCartItem = (cartItemId) => {
     GlobalApi.deteleCartItem(cartItemId).then((resp) => {
       getCartList();
@@ -63,7 +68,7 @@ export default function CartScreen({ navigation }) {
           <Ionicons name="chevron-back-circle" size={30} color={COLORS.black} />
         </TouchableOpacity>
         <Text className="  ml-2 text-xl" style={{ fontFamily: "semibold" }}>
-          Cart
+          Giỏ hàng
         </Text>
       </View>
       <View className="space-y-6 flex-1">
@@ -96,7 +101,9 @@ export default function CartScreen({ navigation }) {
               autoPlay
               loop
             />
-            <Text>Không có sản phẩm nào trong giỏ hàng!</Text>
+            <Text className="text-red-500">
+              Không có sản phẩm nào trong giỏ hàng!
+            </Text>
             <TouchableOpacity
               onPress={() => navigation.navigate("Home")}
               className="mt-4 py-2 px-4 rounded-full "
@@ -126,9 +133,33 @@ export default function CartScreen({ navigation }) {
               )}
             />
             <View className="flex-1 p-2">
-              <Text className="font-extrabold text-lg">Order Info</Text>
+              <Text className="font-extrabold text-lg">Thông tin đơn hàng</Text>
               <View className="mt-4 flex-row items-center justify-between">
-                <Text className="font-bold text-base text-gray-400">Total</Text>
+                <Text className="font-bold text-base text-gray-400">
+                  Tổng tiền
+                </Text>
+                <Text
+                  className="font-extrabold text-base"
+                  style={{ color: COLORS.primary }}
+                >
+                  ${totalPrice}
+                </Text>
+              </View>
+              <View className="mt-2 flex-row items-center justify-between">
+                <Text className="font-bold text-base text-gray-400">
+                  Phí vận chuyển
+                </Text>
+                <Text
+                  className="font-extrabold text-base"
+                  style={{ color: COLORS.primary }}
+                >
+                  $0
+                </Text>
+              </View>
+              <View className="mt-2 flex-row items-center justify-between">
+                <Text className="font-bold text-base text-gray-400">
+                  Thanh toán
+                </Text>
                 <Text
                   className="font-extrabold text-base"
                   style={{ color: COLORS.primary }}
@@ -148,7 +179,7 @@ export default function CartScreen({ navigation }) {
                 style={{ backgroundColor: COLORS.primary }}
               >
                 <Text className="text-center text-white font-bold">
-                  CHECKOUT
+                  THANH TOÁN
                 </Text>
               </TouchableOpacity>
             </View>

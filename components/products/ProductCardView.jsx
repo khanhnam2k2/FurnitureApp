@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
-  Alert,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import { COLORS, SIZES } from "../../constants";
@@ -17,11 +16,15 @@ export default function ProductCardView({ item }) {
   const { user, isLogined, setCartItemCount } = useContext(AuthContext);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+
+  // Hàm lấy số lượng sản phẩm trong giỏ hàng
   const getCartItemCount = () => {
     GlobalApi.getCartItemCount(user?._id).then((resp) => {
       setCartItemCount(resp?.data?.itemCount);
     });
   };
+
+  // Hàm thêm sản phẩm vào giỏ hàng
   const addToCart = () => {
     setLoading(true);
     const data = {
@@ -36,7 +39,7 @@ export default function ProductCardView({ item }) {
           Toast.show({
             type: "success",
             text1: "Thành công",
-            text2: "Sản phẩm đươc thêm vào giỏ hàng thành công!",
+            text2: "Thêm vào giỏ hàng thành công!",
           });
         }
       });
@@ -45,6 +48,7 @@ export default function ProductCardView({ item }) {
     }
     setLoading(false);
   };
+
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate("ProductDetail", { item })}
@@ -62,6 +66,7 @@ export default function ProductCardView({ item }) {
           />
         </View>
         <View className="p-2">
+          {/* Tên sản phẩm */}
           <Text
             className="font-bold mb-1"
             style={{ fontSize: SIZES.medium }}
@@ -69,6 +74,8 @@ export default function ProductCardView({ item }) {
           >
             {item?.title}
           </Text>
+
+          {/* Nhà sản xuất */}
           <Text
             style={{ color: COLORS.gray, fontSize: SIZES.small }}
             numberOfLines={1}
@@ -76,6 +83,7 @@ export default function ProductCardView({ item }) {
             {item?.supplier}
           </Text>
           <View className="flex-row justify-between items-center">
+            {/* Giá */}
             <Text style={{ fontSize: SIZES.medium }} className="font-bold">
               ${item?.price}
             </Text>

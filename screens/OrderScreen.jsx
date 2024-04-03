@@ -10,13 +10,15 @@ import { AuthContext } from "../context/AuthContext";
 import GlobalApi from "../GlobalApi";
 
 export default function OrderScreen({ navigation }) {
-  const { user, isLogined } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [userOrders, setUserOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     getUserOrders();
   }, [user?._id]);
+
+  // Hàm lấy danh sách đơn hàng của người dùng
   const getUserOrders = async () => {
     setIsLoading(true);
     GlobalApi.getUserOrders(user?._id).then((resp) => {
@@ -34,14 +36,14 @@ export default function OrderScreen({ navigation }) {
           <Ionicons name="chevron-back-circle" size={30} color={COLORS.black} />
         </TouchableOpacity>
         <Text className="  ml-2 text-xl" style={{ fontFamily: "semibold" }}>
-          Orders
+          Đơn hàng
         </Text>
       </View>
       {isLoading ? (
         <Loading />
       ) : userOrders?.length > 0 ? (
         <View className="flex-1">
-          <Text className="font-bold text-lg mb-4">Thông tin đặt hàng</Text>
+          <Text className="font-bold text-lg mb-4">Danh sách đơn đặt hàng</Text>
           <View className="flex-1">
             <MasonryList
               contentContainerStyle={{
@@ -65,7 +67,7 @@ export default function OrderScreen({ navigation }) {
             autoPlay
             loop
           />
-          <Text>Không có đơn hàng nào!</Text>
+          <Text className="text-red-500">Không có đơn hàng nào!</Text>
         </View>
       )}
     </SafeAreaView>

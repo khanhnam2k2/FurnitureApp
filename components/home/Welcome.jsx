@@ -9,21 +9,15 @@ export default function Welcome() {
   const navigation = useNavigation();
   return (
     <View>
-      <View className="w-full">
-        <View className="flex-row items-center gap-2">
-          <Text className="font-extrabold text-4xl mt-2">Find The Most</Text>
-          <LottieView
-            style={{ width: 120, height: 120 }}
-            source={require("../../assets/images/hello.json")}
-            autoPlay
-            loop
-          />
+      <View className="w-full flex justify-center items-center text-center my-5">
+        <View className="flex-row items-center">
+          <Text className="font-extrabold text-4xl mt-2">Đồ nội thất</Text>
         </View>
         <Text
           className="font-extrabold text-4xl"
           style={{ color: COLORS.primary }}
         >
-          Luxuriours Furniture
+          Sang trọng nhất
         </Text>
       </View>
       <View
@@ -41,7 +35,7 @@ export default function Welcome() {
             className="w-full h-full px-2"
             value=""
             onPressIn={() => navigation.navigate("Search")}
-            placeholder="What are you looking for"
+            placeholder="Bạn đang tìm kiếm gì"
           />
         </View>
         <View>

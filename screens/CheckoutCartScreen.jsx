@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  TextInput,
-  Alert,
-} from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Alert } from "react-native";
 import React, { useContext, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRoute } from "@react-navigation/native";
@@ -15,32 +8,34 @@ import { Button, ProductInCart } from "../components";
 import MasonryList from "@react-native-seoul/masonry-list";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { API_URL } from "../config";
-import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import GlobalApi from "../GlobalApi";
 
 const validationSchema = Yup.object().shape({
   address: Yup.string()
-    .min(8, "Address must be at least 8 characters")
-    .required("Required"),
+    .min(8, "Địa chỉ phải có ít nhất 8 ký tự")
+    .required("Địa chỉ là bắt buộc"),
   phone: Yup.string()
-    .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
-    .required("Required"),
+    .matches(/^[0-9]{10}$/, "Số điện thoại phải có 10 chữ số")
+    .required("Số điện thoại là bắt buộc"),
 });
 export default function CheckoutCartScreen({ navigation }) {
-  const { user, isLogined } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const route = useRoute();
   const { cartData, totalPrice } = route.params;
+
+  // Hàm xử lý form lỗi
   const inValidForm = () => {
-    Alert.alert("Invalid Form", "Please provide all required fields", [
+    Alert.alert("Lỗi", "Vui lòng cung cấp tất cả các trường bắt buộc", [
       {
-        text: "Cancel",
+        text: "Đồng ý",
         onPress: () => {},
       },
     ]);
   };
+
+  // Hàm xử lý đặt hàng với giỏ hàng
   const checkout = (values) => {
     setLoading(true);
     const data = {
@@ -59,6 +54,7 @@ export default function CheckoutCartScreen({ navigation }) {
       setLoading(false);
     });
   };
+
   return (
     <SafeAreaView className="mx-4 flex-1">
       <View className="flex-row w-full justify-start items-center  rounded-full p-1 mt-4 mb-14">
@@ -66,7 +62,7 @@ export default function CheckoutCartScreen({ navigation }) {
           <Ionicons name="chevron-back-circle" size={30} color={COLORS.black} />
         </TouchableOpacity>
         <Text className="  ml-2 text-xl" style={{ fontFamily: "semibold" }}>
-          Checkout
+          Đặt hàng
         </Text>
       </View>
       <View className="flex-1">
@@ -81,7 +77,7 @@ export default function CheckoutCartScreen({ navigation }) {
           renderItem={({ item }) => <ProductInCart item={item} />}
         />
         <View className="flex-1 mt-4 p-2">
-          <Text>Thanh toan</Text>
+          <Text className="text-base font-bold">Thông tin đặt hàng</Text>
           <Formik
             className="flex-1"
             initialValues={{ address: "", phone: "" }}
@@ -90,7 +86,6 @@ export default function CheckoutCartScreen({ navigation }) {
           >
             {({
               handleChange,
-              handleBlur,
               handleSubmit,
               touched,
               values,
@@ -100,7 +95,9 @@ export default function CheckoutCartScreen({ navigation }) {
             }) => (
               <View className="">
                 <View className="mb-3 mx-5">
-                  <Text className="mb-1 me-1 text-right text-sm">SDT</Text>
+                  <Text className="mb-1 me-1 text-right text-sm">
+                    Số điện thoại
+                  </Text>
                   <View
                     className="border h-12 flex-row rounded-lg px-3 items-center"
                     style={{
@@ -113,7 +110,7 @@ export default function CheckoutCartScreen({ navigation }) {
                     <Feather name="phone" size={20} color={COLORS.gray} />
                     <TextInput
                       className="ml-2 flex-1"
-                      placeholder="Enter phone"
+                      placeholder="Nhập số điện thoại"
                       onFocus={() => {
                         setFieldTouched("phone");
                       }}
@@ -133,7 +130,7 @@ export default function CheckoutCartScreen({ navigation }) {
                   )}
                 </View>
                 <View className="mb-3 mx-5">
-                  <Text className="mb-1 me-1 text-right text-sm">Address</Text>
+                  <Text className="mb-1 me-1 text-right text-sm">Địa chỉ</Text>
                   <View
                     className="border h-20 flex-row rounded-lg px-3 items-center"
                     style={{
@@ -152,7 +149,7 @@ export default function CheckoutCartScreen({ navigation }) {
                     <TextInput
                       numberOfLines={5}
                       className="ml-2 flex-1"
-                      placeholder="Enter address"
+                      placeholder="Nhập địa chỉ giao hàng"
                       onFocus={() => {
                         setFieldTouched("address");
                       }}
@@ -176,7 +173,7 @@ export default function CheckoutCartScreen({ navigation }) {
                 <Button
                   loader={loading}
                   onPress={isValid ? handleSubmit : () => inValidForm()}
-                  title={"C H E C K  O U T"}
+                  title={"ĐẶT HÀNG"}
                   isValid={isValid}
                 />
               </View>

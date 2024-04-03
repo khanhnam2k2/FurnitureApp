@@ -18,6 +18,7 @@ import Animated, { FadeInLeft, FadeInDown } from "react-native-reanimated";
 import Lightbox from "react-native-lightbox-v2";
 import { AuthContext } from "../context/AuthContext";
 import GlobalApi from "../GlobalApi";
+import Toast from "react-native-toast-message";
 
 export default function ProductDetailScreen() {
   const { user, isLogined } = useContext(AuthContext);
@@ -34,6 +35,7 @@ export default function ProductDetailScreen() {
     }
   }, [user]);
 
+  // Hàm kiểm tra người dùng có yêu thích sản phẩm này không
   const checkUserFavourite = async () => {
     GlobalApi.checkUserFavourite(user?._id).then((resp) => {
       if (resp.status === 200) {
@@ -46,6 +48,7 @@ export default function ProductDetailScreen() {
     });
   };
 
+  // Hàm thêm sản phẩm vào danh sách yêu thích của người dùng
   const handleFavorite = async () => {
     const data = { userId: user?._id };
     GlobalApi.handleFavorite(item?._id, data).then((resp) => {
@@ -54,6 +57,8 @@ export default function ProductDetailScreen() {
       }
     });
   };
+
+  // Hàm thêm sản phẩm vào giỏ hàng
   const addToCart = () => {
     if (isLogined) {
       setLoading(true);
@@ -64,6 +69,11 @@ export default function ProductDetailScreen() {
       };
       GlobalApi.addToCart(data).then((resp) => {
         if (resp.status === 200) {
+          Toast.show({
+            type: "success",
+            text1: "Thành công",
+            text2: "Thêm vào giỏ hàng thành công!",
+          });
           navigation.navigate("Cart");
         }
         setLoading(false);
@@ -73,9 +83,12 @@ export default function ProductDetailScreen() {
     }
   };
 
+  // Hàm tăng số lượng sản phẩm muốn mua
   const increment = () => {
     setCount(count + 1);
   };
+
+  // Hàm giảm số lượng sản phẩm muốn mua
   const decrement = () => {
     if (count > 1) {
       setCount(count - 1);
@@ -122,7 +135,7 @@ export default function ProductDetailScreen() {
         className="detail-info -mt-4 rounded-tl-3xl rounded-tr-3xl p-6"
         style={{ backgroundColor: COLORS.lightWhite, width: SIZES.width }}
       >
-        {/* Name and price product */}
+        {/* Tên và giá sp */}
         <Animated.View
           entering={FadeInDown.duration(700).springify().damping(12)}
           className="flex-row justify-between items-center mb-6"
@@ -164,7 +177,7 @@ export default function ProductDetailScreen() {
           </View>
         </Animated.View>
 
-        {/* Description */}
+        {/* Mô tả */}
         <Animated.View
           entering={FadeInDown.delay(300).duration(700).springify().damping(12)}
           className="description mb-6"
@@ -173,14 +186,14 @@ export default function ProductDetailScreen() {
             className="font-semibold mb-2"
             style={{ fontSize: SIZES.large - 2 }}
           >
-            Description
+            Mô tả sản phẩm
           </Text>
           <Text className="text-justify" style={{ fontSize: SIZES.small }}>
             {item?.description}
           </Text>
         </Animated.View>
 
-        {/* Location and Delivery */}
+        {/* Vị trí và giao hàng */}
         <Animated.View
           entering={FadeInDown.delay(400).duration(700).springify().damping(12)}
           className="flex-row justify-between items-center p-2 rounded-lg mb-6"
@@ -192,11 +205,11 @@ export default function ProductDetailScreen() {
           </View>
           <View className="flex-row gap-1 items-center">
             <MaterialCommunityIcons name="truck-delivery-outline" size={24} />
-            <Text>Free Delivery</Text>
+            <Text>Miễn phí</Text>
           </View>
         </Animated.View>
 
-        {/*  */}
+        {/* Mua */}
         <Animated.View
           entering={FadeInDown.delay(500).duration(700).springify().damping(12)}
           className="flex-row justify-between items-center mb-6 gap-6"
@@ -217,7 +230,7 @@ export default function ProductDetailScreen() {
               className="text-white font-semibold text-center"
               style={{ fontSize: SIZES.medium }}
             >
-              BUY NOW
+              MUA NGAY
             </Text>
           </TouchableOpacity>
           <TouchableOpacity

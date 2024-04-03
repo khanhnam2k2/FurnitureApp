@@ -8,6 +8,7 @@ import {
   ProfileScreen,
   CartScreen,
 } from "../screens/index";
+
 const Tab = createBottomTabNavigator();
 const screenOptions = {
   tabBarShowLabel: false,
@@ -22,6 +23,7 @@ const screenOptions = {
     height: 70,
   },
 };
+
 export default function BottomTabNavigation() {
   return (
     <Tab.Navigator screenOptions={screenOptions}>

@@ -24,11 +24,7 @@ export default function HomeScreen() {
   const [productList, setProductList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
-  const getCartItemCount = () => {
-    GlobalApi.getCartItemCount(user?._id).then((resp) => {
-      setCartItemCount(resp?.data?.itemCount);
-    });
-  };
+
   useEffect(() => {
     getCartItemCount(user?._id);
     getProductList();
@@ -40,6 +36,14 @@ export default function HomeScreen() {
     }, [user?._id])
   );
 
+  // Hàm lấy số lượng sản phẩm trong giỏ hàng
+  const getCartItemCount = () => {
+    GlobalApi.getCartItemCount(user?._id).then((resp) => {
+      setCartItemCount(resp?.data?.itemCount);
+    });
+  };
+
+  // Hàm lấy danh sách sản phẩm
   const getProductList = () => {
     setIsLoading(true);
     GlobalApi.getProductList().then((resp) => {
@@ -49,6 +53,7 @@ export default function HomeScreen() {
       setIsLoading(false);
     });
   };
+
   return (
     <SafeAreaView className="flex-1 mx-4">
       <StatusBar style="auto" />
@@ -56,7 +61,7 @@ export default function HomeScreen() {
         <View className="flex-row justify-between items-center">
           <Ionicons name="location-outline" size={24} />
           <Text style={styles.locationText}>
-            {user ? "Hello, " + user.username : ""}
+            {user ? "Xin chào, " + user.username : ""}
           </Text>
           <View style={{ alignItems: "flex-end" }}>
             {isLogined ? (

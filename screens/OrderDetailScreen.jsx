@@ -18,7 +18,7 @@ export default function OrderDetailScreen({ navigation }) {
           <Ionicons name="chevron-back-circle" size={30} color={COLORS.black} />
         </TouchableOpacity>
         <Text className="  ml-2 text-xl" style={{ fontFamily: "semibold" }}>
-          Order Detail
+          Chi tiết đơn hàng
         </Text>
       </View>
       <View className="flex-1">

@@ -18,6 +18,7 @@ export default function FavourtiesScreen({ navigation }) {
     }
   }, [user]);
 
+  // Hàm lấy danh sách sp yêu thích của người dùng
   const getFavoriteProducts = (userId) => {
     setIsLoading(true);
     GlobalApi.getFavoriteProducts(userId).then((resp) => {
@@ -27,6 +28,8 @@ export default function FavourtiesScreen({ navigation }) {
       }
     });
   };
+
+  // Hàm xóa sp yêu thích của người dùng
   const handleDeleteProductFromFavorites = (userId, productId) => {
     if (userId && productId) {
       GlobalApi.deleteProductFromFavorites(userId, productId).then((resp) => {
@@ -44,7 +47,7 @@ export default function FavourtiesScreen({ navigation }) {
           <Ionicons name="chevron-back-circle" size={30} color={COLORS.black} />
         </TouchableOpacity>
         <Text className="  ml-2 text-xl" style={{ fontFamily: "semibold" }}>
-          Favorties
+          Sản phẩm yêu thích
         </Text>
       </View>
       <View>

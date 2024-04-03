@@ -23,6 +23,7 @@ export default function ProfileScreen({ navigation }) {
   const { user, setUser, isLogined, setIsLogined } = useContext(AuthContext);
   const [avatar, setAvatar] = useState(user?.avatar);
 
+  // Xử lý đăng xuất
   const userLogout = async () => {
     try {
       navigation.replace("Bottom Navigation");
@@ -33,14 +34,16 @@ export default function ProfileScreen({ navigation }) {
       console.log(error);
     }
   };
+
+  // Hàm đăng xuất
   const logout = () => {
-    Alert.alert("Logout", "Are you sure you want to log out", [
+    Alert.alert("Đăng xuất", "Bạn có chắc chắn bạn muốn đăng xuất?", [
       {
-        text: "Cancel",
+        text: "Hủy bỏ",
         onPress: () => console.log("cancel"),
       },
       {
-        text: "OK",
+        text: "Đồng ý",
         onPress: () => {
           userLogout();
         },
@@ -48,20 +51,11 @@ export default function ProfileScreen({ navigation }) {
     ]);
   };
 
-  const deleteAccount = () => {
-    Alert.alert("Delete Account", "Are you sure you want delete Account ", [
-      {
-        text: "Cancel",
-        onPress: () => console.log("cancel"),
-      },
-      {
-        text: "Continue",
-        onPress: () => console.log("Delete Account"),
-      },
-      { defaultIndex: 1 },
-    ]);
-  };
-
+  //
+  /**
+   * Hàm thay đổi avatar cho người dùng
+   * @param String avatarUri - Đường dẫn ảnh
+   */
   const updateAvatarUser = (avatarUri) => {
     const data = {
       avatar: avatarUri,
@@ -71,7 +65,7 @@ export default function ProfileScreen({ navigation }) {
         Toast.show({
           type: "success",
           text1: "Thành công",
-          text2: "Cập nhật avatar thành công",
+          text2: "Cập nhật ảnh đại diện thành công",
         });
       }
     });
@@ -80,7 +74,11 @@ export default function ProfileScreen({ navigation }) {
     let permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
-      alert("Permission to access camera roll is required!");
+      Toast.show({
+        type: "error",
+        text1: "Lỗi",
+        text2: "Cần có quyền truy cập vào cuộn camera!",
+      });
       return;
     }
 
@@ -109,7 +107,7 @@ export default function ProfileScreen({ navigation }) {
       }}
     >
       <View>
-        {/* Background profile */}
+        {/* Ảnh nền trang cá nhân */}
         <View className="w-full">
           <Image
             source={require("../assets/images/space.jpg")}
@@ -117,7 +115,6 @@ export default function ProfileScreen({ navigation }) {
           />
         </View>
 
-        {/* Profile info */}
         <View>
           <View className="flex items-center">
             {/* ảnh đại diện */}
@@ -134,12 +131,13 @@ export default function ProfileScreen({ navigation }) {
                 />
               )}
             </TouchableOpacity>
+
             <Text
               className="mt-2 text-base font-bold mb-2"
               style={{ color: COLORS.primary }}
             >
               {isLogined === false
-                ? "Please login into your account"
+                ? "Vui lòng đăng nhập vào tài khoản của bạn"
                 : user?.username}
             </Text>
             {isLogined === false ? (
@@ -148,7 +146,7 @@ export default function ProfileScreen({ navigation }) {
                   style={{ backgroundColor: COLORS.secondary }}
                   className="px-4 py-2 rounded-full"
                 >
-                  <Text className="font-bold">L O G I N</Text>
+                  <Text className="font-bold">Đăng nhập</Text>
                 </View>
               </TouchableOpacity>
             ) : (
@@ -156,17 +154,14 @@ export default function ProfileScreen({ navigation }) {
                 style={{ backgroundColor: COLORS.secondary }}
                 className="px-4 py-2 rounded-full"
               >
-                <Text className="font-bold">
-                  {isLogined === false
-                    ? "Please login into your account"
-                    : user?.email}
-                </Text>
+                <Text className="font-bold">{user?.email}</Text>
               </View>
             )}
 
             {isLogined === false ? (
               <View></View>
             ) : (
+              // Menu cho người dùng
               <View
                 className="mt-6 rounded-lg border"
                 style={{
@@ -177,7 +172,7 @@ export default function ProfileScreen({ navigation }) {
                 <TouchableOpacity
                   onPress={() => navigation.navigate("Favourties")}
                 >
-                  <View className="flex-row border-b-2 border-gray-200 px-4 py-3 gap-4 items-center mx-1">
+                  <View className="flex-row border-b-2 border-gray-200 px-4 py-4 gap-4 items-center mx-1">
                     <MaterialCommunityIcons
                       name="heart-outline"
                       size={24}
@@ -187,12 +182,12 @@ export default function ProfileScreen({ navigation }) {
                       className="text-base font-bold"
                       style={{ color: COLORS.primary }}
                     >
-                      Favorties
+                      Đã thích
                     </Text>
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate("Orders")}>
-                  <View className="flex-row border-b-2 border-gray-200 px-4  py-3 gap-4 items-center mx-1">
+                  <View className="flex-row border-b-2 border-gray-200 px-4  py-4 gap-4 items-center mx-1">
                     <MaterialCommunityIcons
                       name="truck-delivery-outline"
                       size={24}
@@ -202,12 +197,12 @@ export default function ProfileScreen({ navigation }) {
                       className="text-base font-bold"
                       style={{ color: COLORS.primary }}
                     >
-                      Orders
+                      Đơn hàng
                     </Text>
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
-                  <View className="flex-row border-b-2 border-gray-200 px-4  py-3 gap-4 items-center mx-1">
+                  <View className="flex-row border-b-2 border-gray-200 px-4  py-4 gap-4 items-center mx-1">
                     <SimpleLineIcons
                       name="bag"
                       size={24}
@@ -217,18 +212,18 @@ export default function ProfileScreen({ navigation }) {
                       className="text-base font-bold"
                       style={{ color: COLORS.primary }}
                     >
-                      Cart
+                      Giỏ hàng
                     </Text>
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => logout()}>
-                  <View className="flex-row  px-4 py-3 gap-4 items-center  mx-1">
+                  <View className="flex-row  px-4 py-4 gap-4 items-center  mx-1">
                     <AntDesign name="logout" size={24} color={COLORS.primary} />
                     <Text
                       className="text-base font-bold"
                       style={{ color: COLORS.primary }}
                     >
-                      Logout
+                      Đăng xuất
                     </Text>
                   </View>
                 </TouchableOpacity>
