@@ -52,6 +52,7 @@ export default function LoginScreen({ navigation }) {
           setUser(resp?.data);
           AsyncStorage.setItem("isLogined", JSON.stringify(true));
           AsyncStorage.setItem("user", JSON.stringify(resp?.data));
+          AsyncStorage.setItem("adStatus", "");
           navigation.replace("Bottom Navigation");
           setLoader(false);
         } else {
