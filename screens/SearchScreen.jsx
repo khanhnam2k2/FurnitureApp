@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants";
@@ -16,14 +16,19 @@ export default function SearchScreen() {
   const [searchKey, setSearchKey] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSearched, setIsSearched] = useState(false);
 
-  // Hàm xử lý tìm kiếm sản phẩm
-  const handlePressSearch = () => {
-    setIsSearched(true);
-    searchProducts();
-    setSearchResults([]);
-  };
+  useEffect(() => {
+    const delaySearch = setTimeout(() => {
+      if (searchKey) {
+        searchProducts();
+      } else {
+        setSearchResults([]);
+      }
+    }, 500);
+    return () => {
+      clearTimeout(delaySearch);
+    };
+  }, [searchKey]);
 
   // Hàm tìm kiếm sản phẩm
   const searchProducts = async () => {
@@ -60,7 +65,7 @@ export default function SearchScreen() {
         </View>
         <View>
           <TouchableOpacity
-            onPress={() => handlePressSearch()}
+            onPress={searchProducts}
             className="w-12 h-full justify-center items-center rounded-lg"
           >
             <Feather name="search" size={30} color={COLORS.primary} />
@@ -72,7 +77,7 @@ export default function SearchScreen() {
         <View style={{ marginTop: 24 }}>
           <Loading />
         </View>
-      ) : isSearched && searchResults.length === 0 ? (
+      ) : searchResults.length === 0 ? (
         <View
           style={{
             flex: 1,
